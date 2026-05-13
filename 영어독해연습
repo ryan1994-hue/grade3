@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBS 수능특강 영어독해연습 — 문장 분석</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=DM+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f2ec;--card:#fff;--accent:#2d6a4f;--text:#1a1a18;--muted:#6b6b67;--border:#ddd9d0;
+  --tag-blue:#dbeafe;--tag-blue-t:#1e40af;--tag-amber:#fef3c7;--tag-amber-t:#92400e;
+  --tag-green:#dcfce7;--tag-green-t:#166534;--tag-rose:#ffe4e6;--tag-rose-t:#9f1239;
+  --tag-purple:#ede9fe;--tag-purple-t:#4c1d95;--tag-teal:#ccfbf1;--tag-teal-t:#134e4a;
+  --hl-y:#fde68a;--hl-b:#bfdbfe;--hl-g:#bbf7d0;--hl-p:#e9d5ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+header{background:var(--accent);color:#fff;padding:24px 40px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,.06);border-radius:50%;}
+.header-sub{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;margin-bottom:6px;}
+header h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;line-height:1.4;}
+.header-meta{margin-top:8px;font-size:12px;opacity:.65;}
+
+#list-view{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
+#detail-view{display:none;}
+#detail-view .inner{max-width:860px;margin:0 auto;padding:24px 20px 60px;}
+
+.back-bar{position:sticky;top:0;z-index:100;background:var(--accent);display:flex;align-items:center;gap:10px;padding:12px 24px;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+.back-bar button{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:500;padding:6px 16px 6px 10px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.back-bar button:hover{background:rgba(255,255,255,.28);}
+.back-bar .bar-title{font-family:'DM Mono',monospace;font-size:12px;color:rgba(255,255,255,.65);}
+
+.section-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;padding-left:2px;}
+
+.prob-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .2s,box-shadow .2s,transform .15s;}
+.prob-card:hover{border-color:var(--accent);box-shadow:0 4px 18px rgba(45,106,79,.12);transform:translateY(-1px);}
+.prob-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:52px;}
+.prob-type{font-size:11px;font-weight:500;padding:2px 9px;border-radius:20px;white-space:nowrap;}
+.type-blank{background:var(--tag-green);color:var(--tag-green-t);}
+.type-meaning{background:var(--tag-blue);color:var(--tag-blue-t);}
+.type-grammar{background:var(--tag-rose);color:var(--tag-rose-t);}
+.type-order{background:var(--tag-purple);color:var(--tag-purple-t);}
+.type-insert{background:var(--tag-teal);color:var(--tag-teal-t);}
+.type-title{background:var(--tag-amber);color:var(--tag-amber-t);}
+.type-irrel{background:#f0fdf4;color:#14532d;}
+.type-vocab{background:#fff7ed;color:#7c2d12;}
+.type-summary{background:#fdf4ff;color:#581c87;}
+.prob-title{font-size:14px;color:var(--text);flex:1;line-height:1.5;}
+.prob-arrow{color:var(--muted);font-size:18px;}
+
+.detail-header{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:20px;}
+.detail-meta{font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'DM Mono',monospace;}
+.detail-qtype{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;}
+.detail-passage{font-size:14px;line-height:1.9;color:var(--text);border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;white-space:pre-wrap;}
+.blank-slot{display:inline-block;background:#fef9c3;color:#713f12;border:1px dashed #ca8a04;border-radius:4px;padding:0 8px;font-size:13px;font-weight:500;}
+.choices{margin-top:12px;}
+.choice{font-size:13px;color:var(--muted);padding:3px 0;}
+.choice.correct{color:var(--accent);font-weight:600;}
+.answer-wrap{margin-top:14px;}
+.answer-reveal-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:2px solid var(--accent);color:var(--accent);font-family:'Pretendard',sans-serif;font-size:13px;font-weight:600;padding:6px 16px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s;}
+.answer-reveal-btn:hover{background:var(--accent);color:#fff;}
+.answer-hidden{display:none;margin-top:10px;}
+.answer-hidden.show{display:block;}
+.answer-badge{display:inline-block;margin-top:4px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;border-radius:6px;padding:3px 12px;}
+
+.hl-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding:9px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--muted);align-items:center;}
+.hl-legend-item{display:flex;align-items:center;gap:5px;}
+.hl-dot{width:30px;height:13px;border-radius:3px;display:inline-block;}
+
+.sent-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.sent-header{padding:13px 18px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;transition:background .15s;}
+.sent-header:hover{background:#f9f7f4;}
+.s-num{font-family:'DM Mono',monospace;font-size:11px;color:#999;min-width:22px;padding-top:3px;}
+.s-en{font-size:14px;line-height:1.75;flex:1;}
+.s-toggle{color:#bbb;font-size:14px;padding-top:3px;transition:transform .25s;}
+.s-toggle.open{transform:rotate(180deg);}
+.sent-body{display:none;padding:14px 18px 16px 52px;border-top:1px solid var(--border);}
+.sent-body.open{display:block;}
+.ko-line{font-size:14px;line-height:1.75;margin-bottom:12px;border-left:3px solid #9FE1CB;padding-left:10px;color:var(--text);}
+.gram-box{background:#fafaf8;border:1px solid var(--border);border-radius:8px;padding:11px 14px;}
+.gram-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;}
+.gram-desc{font-size:13px;line-height:1.7;color:#444;}
+.gram-desc b{color:var(--text);font-weight:600;}
+.vocab-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.vw{font-size:12px;background:#fff;border:1px solid var(--accent);border-radius:5px;padding:3px 10px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:4px;font-weight:500;transition:background .15s,color .15s;}
+.vw:hover{background:var(--accent);color:#fff;}
+
+.hy{background:var(--hl-y);border-radius:3px;padding:0 2px;}
+.hb{background:var(--hl-b);border-radius:3px;padding:0 2px;}
+.hg{background:var(--hl-g);border-radius:3px;padding:0 2px;}
+.hp{background:var(--hl-p);border-radius:3px;padding:0 2px;}
+
+.ai-loading{display:flex;align-items:center;gap:8px;padding:16px 0;color:var(--muted);font-size:13px;}
+.ai-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 1.2s infinite;}
+.ai-dot:nth-child(2){animation-delay:.2s;}
+.ai-dot:nth-child(3){animation-delay:.4s;}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.1);}}
+.ai-error{padding:12px;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;font-size:13px;color:#b91c1c;}
+
+@media(max-width:540px){header{padding:20px;}.sent-body{padding-left:18px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-sub">2026학년도 수능특강 영어독해연습</div>
+  <h1>1학기 2차고사 — 문장별 분석 노트</h1>
+  <div class="header-meta">총 14문항 · 4강 / 8강 / 12강 &nbsp;·&nbsp; 문장 클릭 시 AI 실시간 분석</div>
+</header>
+
+<div id="list-view">
+  <div class="section-label">4강</div>
+  <div class="prob-card" onclick="show(0)"><span class="prob-num">26007-0038</span><span class="prob-type type-blank">빈칸 추론</span><span class="prob-title">공감과 진정성의 연결 — 의무론적 리더십</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(1)"><span class="prob-num">26007-0039</span><span class="prob-type type-blank">빈칸 추론</span><span class="prob-title">감정과 언어는 서로 독립적인 과정</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(2)"><span class="prob-num">26007-0040</span><span class="prob-type type-blank">빈칸 추론</span><span class="prob-title">환경 보호 — 전부 아니면 전무가 아니다</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(3)"><span class="prob-num">26007-0041</span><span class="prob-type type-blank">빈칸 추론</span><span class="prob-title">한계효용과 스포츠 소비의 예외</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(4)"><span class="prob-num">26007-0047</span><span class="prob-type type-blank">빈칸 추론</span><span class="prob-title">멜로디의 정체성 — 음정 관계의 불변성</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(5)"><span class="prob-num">26007-0048</span><span class="prob-type type-meaning">밑줄 의미</span><span class="prob-title">"readers are the project" — 독자 참여 저널리즘</span><span class="prob-arrow">›</span></div>
+  <div class="section-label">8강</div>
+  <div class="prob-card" onclick="show(6)"><span class="prob-num">26007-0085</span><span class="prob-type type-grammar">어법</span><span class="prob-title">해양 산성화와 탄소 흡수 — 어법 오류 찾기</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(7)"><span class="prob-num">26007-0087</span><span class="prob-type type-title">제목 추론</span><span class="prob-title">이모지와 스마트폰 — 소통 속도의 대가</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(8)"><span class="prob-num">26007-0089</span><span class="prob-type type-irrel">무관한 문장</span><span class="prob-title">과일 가공 폐기물의 가치화</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(9)"><span class="prob-num">26007-0090</span><span class="prob-type type-order">글의 순서</span><span class="prob-title">하드 스킬과 소프트 스킬</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(10)"><span class="prob-num">26007-0091</span><span class="prob-type type-grammar">어법</span><span class="prob-title">무역의 역사와 인간 문명 — 어법 오류 찾기</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(11)"><span class="prob-num">26007-0092</span><span class="prob-type type-title">주제 추론</span><span class="prob-title">창업자로 이직하는 직원들의 결정 요인</span><span class="prob-arrow">›</span></div>
+  <div class="section-label">12강</div>
+  <div class="prob-card" onclick="show(12)"><span class="prob-num">26007-0133</span><span class="prob-type type-vocab">어휘</span><span class="prob-title">성과 평가 일지 작성의 효과</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(13)"><span class="prob-num">26007-0135</span><span class="prob-type type-summary">요약문</span><span class="prob-title">노인 뇌의 기억 구조 — 핵심 정보 중심</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(14)"><span class="prob-num">26007-0140</span><span class="prob-type type-insert">문장 삽입</span><span class="prob-title">이누이트의 항법 — 별과 다양한 단서</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(15)"><span class="prob-num">26007-0141</span><span class="prob-type type-summary">요약문</span><span class="prob-title">집단 이탈과 사회적 지위 상승</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(16)"><span class="prob-num">26007-0142</span><span class="prob-type type-vocab">어휘</span><span class="prob-title">기억의 불완전성 — 재구성으로서의 기억</span><span class="prob-arrow">›</span></div>
+  <div class="prob-card" onclick="show(17)"><span class="prob-num">26007-0143/44</span><span class="prob-type type-title">제목 / 어휘</span><span class="prob-title">유머의 진화적 기원과 사회적 기능</span><span class="prob-arrow">›</span></div>
+</div>
+
+<div id="detail-view">
+  <div class="back-bar">
+    <button onclick="goBack()">← 목록으로</button>
+    <span class="bar-title" id="bar-title"></span>
+  </div>
+  <div class="inner" id="detail-content"></div>
+</div>
+
+<script>
+const PROBLEMS = [
+{code:'26007-0038',강:'4강',쪽:'043',qtype:'빈칸 추론',typeClass:'type-blank',answer:3,
+choices:['① being less important than sensitivity','② a key to moral growth for employees','③ values-driven rather than outcome-driven','④ an individual success rather than a collective goal',"⑤ consistent with the leader's educational background"],
+passage:`Central to the notion of brilliant leadership is the critical linkage between empathy and authenticity. While leaders may act on the premise that sensitivity to employee concerns is helpful in achieving organizational goals, brilliant leaders believe that empathy has value in its own right. In this regard, empathy is less a means to an end (e.g., profiting) but rather is consistent with Kant's notion of "Character," which underscores truthfulness as a core element of virtue. From a stakeholder perspective, particularly employees, brilliant leaders would be seen as behaving in ways that reveal a genuineness of motives. Guided by the deontologically-based philosophical guidepost, "We should do our duty for no other reason than because it's the right thing to do," the brilliant leader's empathetic conduct is derived less from strategic or tactical interests than it is from one's personal sense of integrity. That, then, is a defining feature of authenticity: it frames empathy as ___[빈칸]___.`},
+{code:'26007-0039',강:'4강',쪽:'044',qtype:'빈칸 추론',typeClass:'type-blank',answer:1,
+choices:['① cannot guarantee the existence of one another','② tend to intensify each other in certain circumstances','③ cannot be fully understood without a universal context','④ are effortlessly substituted for one another in expression','⑤ are shaped by memorable experiences from early childhood'],
+passage:`Language is socially constructed; over time our cultural collectives agreed upon various abstract symbols and sounds to represent objects, people, places, and experiences. Conversely, basic emotions are biologically constructed; over time evolution repeatedly crafted responses to important life situations — which we later associated with symbols, words, and phrases. The presence of a unique emotion word in one culture does not imply the presence of unique circuitry or unique phenomenology for a special emotion found only in that culture. Similarly, the absence of a specific basic emotion word in one culture does not imply the absence of analogous basic emotion circuitry. Emotions and language are parallel processes that can inform and provide context about one another, but ultimately ___[빈칸]___. An example of this is in Robert Levy's pioneering work in Tahiti, where he found that Tahitians had no words for "grief" and "sadness." Nevertheless, they experienced a "sick, strange" feeling when processing the loss of a loved one.`},
+{code:'26007-0040',강:'4강',쪽:'045',qtype:'빈칸 추론',typeClass:'type-blank',answer:2,
+choices:['① less a shared goal than a personal choice','② not necessarily an all-or-nothing venture','③ increasingly common for people to follow','④ not always the best way to help our planet','⑤ practiced for society rather than the individual'],
+passage:`There are some pretty big lifestyle changes you can choose to make if you want to help the planet. For instance, you could follow a plant-based diet, or you could pledge to go zero-waste. If you're surrounded by people who are making these drastic changes, you might feel pressured into following suit: you might feel that if you don't make these changes, your efforts to save the planet are inadequate. Despite what you might hear, a plant-based diet or zero-waste living is ___[빈칸]___. Reducing your meat and dairy intake a little is better than not doing so at all; buying fruit, veg and grains loose when you can is better than always buying them wrapped in plastic. The fact is, you don't have to follow a vegan or a zero-waste lifestyle perfectly to make a difference. Making little changes where you can and how you can is what truly counts.`},
+{code:'26007-0041',강:'4강',쪽:'046',qtype:'빈칸 추론',typeClass:'type-blank',answer:5,
+choices:['① sports fandom is not just about games, but also about player skills','② income determines the marginal utility of goods and services','③ demand for many sports events varies across countries','④ any desire for services largely coincides with supply','⑤ professional team sports contradict this assumption'],
+passage:`When income rises, so will the quantity demanded. When income falls, so will demand. However, if your income doubles, you would not always buy twice as much of a particular good or service. For example, there are only so many tubs of ice cream you would want to eat, no matter how wealthy you are. This is an example of "marginal utility." Marginal utility is the concept that each unit of a good or service is a little less useful to you than the first. At some point, you will not want it anymore, and the marginal utility drops to zero. We can see that ___[빈칸]___. Fans (consumers) often want more games to watch. We have seen this example play out in recent years in relation to the number of sport matches on live television increasing and through the advents of new competitions or formats of the game (e.g., Twenty20 cricket) or expansions of league reforms to fit in additional fixtures (e.g., UEFA Champions League reforms for 2024).`},
+{code:'26007-0047',강:'4강',쪽:'052',qtype:'빈칸 추론',typeClass:'type-blank',answer:4,
+choices:['① the volume remains constant throughout the song','② there is no change in the instruments being played','③ the tempo is not modified from the original version','④ the relative distances between them remain the same','⑤ there are predictable rhythmic patterns for the drums'],
+passage:`Melodies are defined not by the absolute value of each pitch, but by the pattern or relation of successive pitches across time; most people have no trouble recognizing a melody that is played in a higher or lower key than they've heard it in before. In fact, many melodies do not have a "correct" starting pitch; they just float freely in space, starting anywhere. "Happy Birthday" is an example of this. One way to think about a melody, then, is as an abstract prototype that is derived from specific combinations of key, tempo, instrumentation, and so on. A cognitive psychologist would say that a melody is an auditory object that maintains its identity in spite of transformations, just as a chair maintains its identity when you move it to the other room, turn it upside down, or paint it red. So, for example, if you hear a song played louder than you are accustomed to, you still identify it as the same song. The same holds for changes in the absolute pitch values of the song, which can be changed so long as ___[빈칸]___.`},
+{code:'26007-0048',강:'4강',쪽:'053',qtype:'밑줄 의미',typeClass:'type-meaning',answer:5,
+choices:['① readers are selected as the topic of many stories','② readers financially support independent journalism','③ readers provide tips and examples for writing articles','④ readers actively check the credibility of published data','⑤ readers actively help shape the content and direction of stories'],
+passage:`The Dutch news site De Correspondent was born with the idea of incorporating active readers from the start. Jay Rosen, the NYU professor who became an adviser to the organisation, explained how the journalists were expected to have a radically different relationship with the reader than in traditional media. Expectations are that writers will continuously share what they are working on with the people who follow them and read their stuff. They will pose questions and post call-outs as they launch new projects: what they want to find out, the expertise they are going to need to do this right, any sort of help they want from readers. Sometimes [readers are the project]. Writers also manage the discussion threads — which are not called comments but contributions — in order to highlight the best additions and pull useful material into the next version of an ongoing story. Some of these crowdsourcing techniques have been used by journalists on more mainstream papers, notably David Fahrenthold of the Washington Post.`},
+{code:'26007-0085',강:'8강',쪽:'090',qtype:'어법 — 틀린 것 찾기',typeClass:'type-grammar',answer:3,
+choices:['① to absorb','② allowed','③ eroding ← 정답','④ are home','⑤ which'],
+passage:`The current trend of increasing global atmospheric temperatures and increasing seawater acidity reduces the overall capacity of oceans ① to absorb more CO2. If ② allowed to continue unstopped, this could potentially change pH in the deep-sea regions and hinder the critical processes associated with carbon particulate burial. Similarly, complex relationships between water temperatures and ocean acidity in marine systems ③ eroding calcification rates in shell-bearing organisms and threaten the survival of coral reefs. Coral reefs cover less than 1 percent of the Earth's surface but ④ are home to 25 percent of all marine biodiversity. By the end of the century, current levels of carbon dioxide emissions could result in the most acidic levels of ocean pH in 20 million years, ⑤ which would have severe adverse effects on ocean water chemistry (both coastal and deep sea), the marine life and food webs, and the function of oceans as a carbon reservoir.`},
+{code:'26007-0087',강:'8강',쪽:'092',qtype:'제목 추론',typeClass:'type-title',answer:5,
+choices:['① A World United by Emojis: Digital Bonds in Daily Life','② Smartphone Culture: Where Communication Meets Efficiency','③ Emojis Help Build Closer Connections in the Smartphone Age',"④ The Convenience of Instant Communication: Can't Wait to Talk",'⑤ Fading Deep Conversations in the Smartphone Era: The Price of Speed'],
+passage:`Emojis help us to be super-quick and efficient when responding. Yet, this also raises a question: is this actually a good thing? This kind of rapid response is closely linked to the development of the smartphone. Our communication is now so directly influenced by technology that the two cannot be separated. Technology has increased our efficiency and productivity, but it is a double-edged sword. We may end up less human than we ever wanted. As we adapt to rapidity and hyper-productivity, our conversation may become like fast food, and we may lose the ability to produce and enjoy slow talk. Before the arrival of the smartphone, we were able to wait a couple of days for an answer to an email, and for urgent matters, we made a call. We knew the division between these two forms of communication. In the smartphone era, we cannot and do not wait. We expect an immediate answer for everything.`},
+{code:'26007-0089',강:'8강',쪽:'094',qtype:'전체 흐름과 무관한 문장',typeClass:'type-irrel',answer:4,
+choices:['① 재활용 기술의 필요성','② 폐기물의 가치화 가능성','③ 부가가치 제품 회수 가능','④ 전통적 처리 방식 선호 ← 정답','⑤ 유망한 연구 분야'],
+passage:`Utilizing trash or residues from the fruit processing sector has recently become a significant challenge for agro-processing businesses and has a negative influence on the environment. The fruit processing industry produces a lot of waste dumped in landfills or rivers, threatening the ecosystem. ① Therefore, there is a need for disposal techniques that recycle it, provide resources for livestock feed, or extract or create goods with added value. ② It is possible to lessen environmental degradation, increase energy security, and cut greenhouse gas emissions by turning wastes collected from the fruit processing industry into valuable products. ③ It is believed that using fruit waste from processing can help the food industry recover value-added products and make operations commercially viable. ④ Industries prioritize traditional waste disposal methods over sustainable solutions due to high costs and regulatory requirements and lack financial incentives to invest in food waste processing. ⑤ In light of this, it is a promising field of research to use wastes from the processing of fruit to create goods with value added.`},
+{code:'26007-0090',강:'8강',쪽:'095',qtype:'글의 순서',typeClass:'type-order',answer:3,
+choices:['① (A)-(C)-(B)','② (B)-(A)-(C)','③ (B)-(C)-(A) ← 정답','④ (C)-(A)-(B)','⑤ (C)-(B)-(A)'],
+passage:`Hard skills are defined as the specific procedural skills and technical expertise that are required to perform a job, or more aptly put, the 'what' needs to be done.
+
+(A) We think not. In fact, these soft attributes, or 'how' something is done, are equally critical and allow professionals to thrive in the interpersonal service orientated economy faced daily. This is why modern businesses are looking for graduates with a good mix of hard and soft skills as they enter the workforce.
+
+(B) These skills are clearly listed in the job description and are acquired through more highly specific education and training programs. Hard skills are the skills we think of when considering a professional college degree.
+
+(C) Examples include accountants, who must have accounting degrees, lawyers, who must have law degrees, and doctors, who must have medical degrees. But does that mean that these professionals do not need soft skills?`},
+{code:'26007-0091',강:'8강',쪽:'096',qtype:'어법 — 틀린 것 찾기',typeClass:'type-grammar',answer:5,
+choices:['① that','② they','③ to maintain','④ fueling','⑤ how → what ❌ 정답'],
+passage:`Trade is an inevitable activity of human existence. In all periods, people have engaged in transactions ① that involve the exchange of goods, services, and ideas. Not only has trade helped societies adapt their responses to risk and uncertainty but it has also played a central role in intergroup relations be ② they cordial or predatory. Long before the invention of money for private exchange, elements of trade formed part of the earliest human interactions. Among prehistoric people, goods, services, and ideas were exchanged as gifts, tributes, or as part of a barter economy. Beyond early hunter-gatherer communities which strove ③ to maintain self-sufficiency, long-distance trade could be found. Indeed, since its beginnings in the Palaeolithic and Neolithic periods, the impulse to trade has developed, eventually ④ fueling immense civilisations and empires. It was the development of maritime trade connecting the Mediterranean, Indian Ocean, and South China Sea, along with the creation of the Silk Road, that established ⑤ how we recognise today as the foundations of the world's modern commercial and trading systems.`},
+{code:'26007-0092',강:'8강',쪽:'097',qtype:'주제 추론',typeClass:'type-title',answer:5,
+choices:['① most valued traits in employees at large companies','② impact of financial savings on career change decisions','③ steps employees can take to become successful founders','④ uncertainties employees face in a rapidly changing job market',"⑤ factors influencing employees' decision to start their own business"],
+passage:`Employees tend to leave companies to become founders when their employers' growth rates begin to fall, reducing the attractiveness of staying there and the opportunity costs of becoming founders. The likelihood of an employee leaving to become a founder has also been linked to the employee's own performance. Employees whose performance was in the middle of the distribution were the least likely to leave; the most likely were the poor-performing employees (the "slugs" whose pay wasn't high and who had the least to lose by leaving to found a startup) and the high-performing employees (the "stars" who had the potential to earn high wages by becoming self-employed). Although high-paid employees may be less likely than lower-paid employees to walk away from their salaries, if they have saved a high percentage of their earnings over the years, that nest egg may make them more likely to make the leap than if they hadn't saved.`},
+{code:'26007-0133',강:'12강',쪽:'138',qtype:'어휘 — 문맥상 부적절한 낱말',typeClass:'type-vocab',answer:3,
+choices:['① better ✓','② hard ✓','③ increase → decrease ❌ 정답','④ note ✓','⑤ recall ✓'],
+passage:`Problems such as recency error occur because human memory is fallible, and it is challenging for raters to remember all of what happened during the appraisal period. One method of dealing with this is to keep performance logs. As raters record instances of high and low performance, there will be more documentation of important performance incidents, and the actual appraisal will be a ① better reflection of important occurrences of the appraisal period. Of course, the success of this method will depend on the rater's persistence in recording performance information, which may be ② hard to do due to the time pressures that managers face. Interestingly, diary keeping does not necessarily ③ increase the effects of liking on performance ratings. In fact, when raters keep a performance diary for employees, there tends to be a stronger relationship between liking and ratings. It could be that when they keep diaries, raters are more likely to ④ note positive events for employees they like, and negative events for employees they dislike. At the same time, researchers also showed that diary keeping improves rater reactions to the performance appraisal system, probably because diary keeping improves ⑤ recall and makes rating easier.`},
+{code:'26007-0135',강:'12강',쪽:'140',qtype:'요약문 빈칸',typeClass:'type-summary',answer:2,
+choices:['(A) insignificant / (B) different','(A) core / (B) shared ← 정답','(A) vital / (B) unfamiliar','(A) specific / (B) similar','(A) unknown / (B) difficult'],
+passage:`Although older adults often notice their increased memory difficulties, there are also benefits to the way that older adults' brains record information. While younger adults' brains may be drafting memory structures with lots of details — some of them unimportant — older adults' memory structures are more likely to include just the essential elements. Remembering just the critical information can make it easier for older adults to avoid the common pitfall of "missing the forest for the trees," allowing them to grasp the overall importance of a situation. The way older adults' brains build memory structures can also make it easier for them to see commonalities between different situations and to understand how knowledge acquired in one context can be applied to the situation at hand. In fact, some of the wisdom that comes with aging may be attributable to changes in the way the aging brain builds its memory structures.`},
+{code:'26007-0140',강:'12강',쪽:'145',qtype:'문장 삽입',typeClass:'type-insert',answer:3,
+choices:['① 번','② 번','③ 번 ← 정답','④ 번','⑤ 번'],
+passage:`[삽입 문장] However, depending entirely on observing the stars would be totally impractical as the stars were frequently obscured by cloud, fog, or blowing snow.
+
+Inuit used the stars as one of their navigation tools, making periodic adjustments for the star's apparent movement. ( ① ) Their calculations involved a thorough knowledge of star and constellation positions in relation to their seasonal and nocturnal cycles. ( ② ) For almost five months a year, the stars could not be observed at all due to the extremely long days. ( ③ ) Consequently, star observations were used as one aspect of the navigational methods along with wind direction, the set of snowdrifts, landmarks, sea currents and floating seaweed, cloud formations and movement, and atmospheric effects. ( ④ ) While often travelling on moving sea ice, wayfinders modified their direction, allowing for the movement of the ice and their own passage over it. ( ⑤ ) Hunters also drew navigational insight from the behaviour of their sled dogs and other animals such as walruses and birds.`},
+{code:'26007-0141',강:'12강',쪽:'146',qtype:'요약문 빈칸',typeClass:'type-summary',answer:3,
+choices:['(A) follow / (B) stabilize','(A) reject / (B) weaken','(A) quit / (B) elevate ← 정답','(A) abandon / (B) harm','(A) support / (B) progress'],
+passage:`The urge to leave is easy to understand from an animal perspective. Mammals cluster when predators lurk and spread out when it's safe. Tigers and orangutans are the only mammals with no predators and the only mammals who live alone. Gibbons space themselves out in pairs to prevent conflict. It's easy to see how humans would try to avoid conflict by spacing themselves out. Not only does it improve access to resources, but it frees you from being at the bottom of the hierarchy. If you persuade others to leave with you, you are suddenly in the one-up position. Some people surely perished when they left their natal groups, but others went on to create new settlements that would fissure themselves in time. Leaving is an effective way to raise your status when you don't expect to win a direct conflict.`},
+{code:'26007-0142',강:'12강',쪽:'147',qtype:'어휘 — 문맥상 부적절한 낱말',typeClass:'type-vocab',answer:5,
+choices:['① same ✓','② lower-resolution ✓','③ imperfect ✓','④ fiction ✓','⑤ resistant → susceptible ❌ 정답'],
+passage:`The act of remembering something is a process of bringing back on line those neurons that were involved in the original experience. The neurons represent the world to us as the thing is happening, and as we recall it, those ① same neurons re-present the thing to us. Once we get those neurons to become active in a fashion similar to how they were during the original event, we experience the memory as a ② lower-resolution replay of the original event. If only we could get every one of those original neurons active in exactly the same way they were the first time, our recollections would be strikingly vivid and realistic. But remembering is ③ imperfect; the instructions for which neurons need to be gathered and how exactly they need to fire are weak and degraded, leading to a representation that is only a dim and often inaccurate copy of the real experience. Memory is ④ fiction. It may present itself to us as fact but is highly ⑤ resistant to distortion. Memory is not just a replaying, but a rewriting.`},
+{code:'26007-0143/44',강:'12강',쪽:'148',qtype:'제목 추론 + 어휘',typeClass:'type-title',answer:1,
+choices:['제목 ① The Evolutionary Roots of Humour and Laughter ← 정답','② Humour as a Tool to Dominate Others in Conflict','③ Psychological Benefits of Humour in Human Interaction','④ The Role of Humour in Enhancing Verbal Communication','⑤ Comparing Human Laughter to Animal Communication Systems','어휘 (e) generate → relieve ❌'],
+passage:`Darwin said that there must be some sort of evolutionary advantage associated with humour, and it does indeed appear that humans developed it directly because it has numerous positive properties, and very few negative ones. Laughing uses up energy, perhaps, and the noise created by laughter might have made our early ancestors vulnerable to predators, but these potential problems are far (a) outweighed by the benefits. Some argue that the pleasure associated with humorous exchange replaced the pleasure derived from social grooming at some stage in our development: both laughter and social grooming release endogenous opiates and so the feelings of gratification (b) positively reinforce both types of behaviour. Thus, it seems that one early function of humour was as a social lubricant, and the fundamental evolutionary purpose of humour and laughter was to (c) facilitate cooperation between people; essentially, a laughing response signals that one is both ready and able to cooperate. Observations of primates suggest that humour might be linked to our need to partake in mock-aggression and create safe spaces where social conflicts can be (d) resolved. Similarly, anthropologists note that humour in traditional societies often takes the form of joking relationships between people, or individual clowning, whose purpose is to (e) generate tensions.`}
+];
+
+// AIzaSyDgoruhxiVKHQsy6fOGrNkubU-X2dgojsQ
+// 발급: https://aistudio.google.com/app/apikey (무료)
+const GEMINI_API_KEY = 'YOUR_API_KEY_HERE';
+
+const cache = {};
+let currentIdx = 0;
+
+function naverLink(w){ return `https://en.dict.naver.com/#/search?query=${encodeURIComponent(w)}`; }
+
+function makeTag(c,t){ return `<span class="tag" style="background:var(--tag-${c});color:var(--tag-${c}-t)">${t}</span>`; }
+
+const LEGEND = `<div class="hl-legend">
+  <span style="font-weight:500;color:var(--text)">하이라이트</span>
+  <span class="hl-legend-item"><span class="hl-dot" style="background:var(--hl-y)"></span>핵심어휘·정답</span>
+  <span class="hl-legend-item"><span class="hl-dot" style="background:var(--hl-b)"></span>명사절·관계절</span>
+  <span class="hl-legend-item"><span class="hl-dot" style="background:var(--hl-g)"></span>부사절·to부정사</span>
+  <span class="hl-legend-item"><span class="hl-dot" style="background:var(--hl-p)"></span>삽입구·동격</span>
+</div>`;
+
+function splitSentences(text) {
+  // 문장 분리: .!? 뒤 공백+대문자, 또는 번호 앞
+  const sents = [];
+  const re = /[^.!?]*[.!?]+/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const s = m[0].trim();
+    if (s.length > 15) sents.push(s);
+  }
+  // 남은 텍스트
+  const last = text.slice(re.lastIndex).trim();
+  if (last.length > 15) sents.push(last);
+  return sents.length ? sents : [text];
+}
+
+async function analyzeWithAI(sentence, p) {
+  const key = sentence.slice(0,60);
+  if (cache[key]) return cache[key];
+
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+    return {ko:'⚠️ API 키를 입력해주세요. 파일 상단 GEMINI_API_KEY 변수에 키를 넣으세요.', tags:[], desc:'Google AI Studio(aistudio.google.com)에서 무료로 발급받을 수 있어요.', vocab:[], highlights:[]};
+  }
+
+  const prompt = `You are an English grammar expert for Korean CSAT (수능) students.
+Problem type: ${p.qtype}
+Sentence to analyze: "${sentence}"
+Passage (first 200 chars): "${p.passage.slice(0,200)}..."
+
+Reply ONLY with JSON (no markdown fences):
+{
+  "ko": "자연스러운 한국어 해석",
+  "highlights": [{"text":"exact phrase","type":"hy|hb|hg|hp"}],
+  "tags": [{"c":"rose|blue|amber|green|teal|purple","t":"문법포인트"}],
+  "desc": "설명 (HTML <b>태그 사용 가능, 150자 이내)",
+  "vocab": [{"w":"word","m":"뜻"}]
+}
+Rules: hy=핵심어휘/정답, hb=명사절·관계절, hg=부사절·to부정사·분사구문, hp=삽입구·동격. Max 4 vocab, 1-3 highlights, 1-3 tags.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      contents: [{parts: [{text: prompt}]}],
+      generationConfig: {temperature: 0.3, maxOutputTokens: 800}
+    })
+  });
+  const data = await res.json();
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  try {
+    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    cache[key] = result;
+    return result;
+  } catch(e) {
+    return {ko:'파싱 오류: ' + raw.slice(0,80), tags:[], desc:'', vocab:[], highlights:[]};
+  }
+}
+
+function applyHL(text, highlights) {
+  if (!highlights?.length) return text;
+  let out = text;
+  [...highlights].sort((a,b)=>b.text.length-a.text.length).forEach(h=>{
+    const esc = h.text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    out = out.replace(new RegExp(esc,'g'), `<span class="${h.type}">${h.text}</span>`);
+  });
+  return out;
+}
+
+async function toggleSent(header, idx) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.s-toggle');
+  const open = body.classList.toggle('open');
+  icon.classList.toggle('open', open);
+  if (!open || body.dataset.done) return;
+  body.dataset.done = '1';
+
+  const rawText = header.querySelector('.s-en').textContent;
+  const p = PROBLEMS[currentIdx];
+  try {
+    const r = await analyzeWithAI(rawText, p);
+    // 헤더에 하이라이트 적용
+    header.querySelector('.s-en').innerHTML = applyHL(rawText, r.highlights);
+    const vocabHtml = (r.vocab||[]).map(v=>`<a class="vw" href="${naverLink(v.w)}" target="_blank">📖 ${v.w}</a>`).join('');
+    const tagsHtml = (r.tags||[]).map(t=>makeTag(t.c,t.t)).join('');
+    body.innerHTML = `
+      <div class="ko-line">${r.ko||''}</div>
+      <div class="gram-box">
+        <div class="gram-title">문법 · 구문 포인트</div>
+        <div class="tags">${tagsHtml}</div>
+        <div class="gram-desc">${r.desc||''}</div>
+        ${vocabHtml?`<div class="vocab-row">${vocabHtml}</div>`:''}
+      </div>`;
+  } catch(e) {
+    body.innerHTML = `<div class="ai-error">⚠️ ${e.message}</div>`;
+  }
+}
+
+function show(idx) {
+  currentIdx = idx;
+  const p = PROBLEMS[idx];
+  const sentences = splitSentences(p.passage);
+
+  const sentCards = sentences.map((s,i)=>`
+    <div class="sent-card">
+      <div class="sent-header" onclick="toggleSent(this,${i})">
+        <span class="s-num">S${i+1}</span>
+        <span class="s-en">${s}</span>
+        <span class="s-toggle">▾</span>
+      </div>
+      <div class="sent-body">
+        <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>클릭 시 AI 분석</span></div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('detail-content').innerHTML = `
+    <div class="detail-header">
+      <div class="detail-meta">${p.강} · p.${p.쪽} · 문항코드 ${p.code}</div>
+      <div class="detail-qtype">${p.qtype}</div>
+      <div class="detail-passage">${p.passage}</div>
+      <div class="choices">${p.choices.map(c=>`<div class="choice">${c}</div>`).join('')}</div>
+      <div class="answer-wrap">
+        <button class="answer-reveal-btn" onclick="revealAnswer(this)">🔍 정답 확인</button>
+        <div class="answer-hidden">
+          <div class="choices">${p.choices.map((c,i)=>`<div class="choice${i+1===p.answer?' correct':''}">${c}</div>`).join('')}</div>
+          <div class="answer-badge">정답 ${p.answer}번</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-label">문장별 분석 — 각 문장을 클릭하면 AI가 실시간 분석합니다</div>
+    ${LEGEND}
+    ${sentCards}`;
+
+  document.getElementById('bar-title').textContent = `${p.code} · ${p.qtype}`;
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('detail-view').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function revealAnswer(btn) {
+  btn.closest('.answer-wrap').querySelector('.answer-hidden').classList.add('show');
+  btn.style.display='none';
+}
+
+function goBack() {
+  document.getElementById('list-view').style.display='block';
+  document.getElementById('detail-view').style.display='none';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
