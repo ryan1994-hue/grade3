@@ -223,15 +223,155 @@ choices:['제목 ① The Evolutionary Roots of Humour and Laughter ← 정답','
 passage:`Darwin said that there must be some sort of evolutionary advantage associated with humour, and it does indeed appear that humans developed it directly because it has numerous positive properties, and very few negative ones. Laughing uses up energy, perhaps, and the noise created by laughter might have made our early ancestors vulnerable to predators, but these potential problems are far (a) outweighed by the benefits. Some argue that the pleasure associated with humorous exchange replaced the pleasure derived from social grooming at some stage in our development: both laughter and social grooming release endogenous opiates and so the feelings of gratification (b) positively reinforce both types of behaviour. Thus, it seems that one early function of humour was as a social lubricant, and the fundamental evolutionary purpose of humour and laughter was to (c) facilitate cooperation between people; essentially, a laughing response signals that one is both ready and able to cooperate. Observations of primates suggest that humour might be linked to our need to partake in mock-aggression and create safe spaces where social conflicts can be (d) resolved. Similarly, anthropologists note that humour in traditional societies often takes the form of joking relationships between people, or individual clowning, whose purpose is to (e) generate tensions.`}
 ];
 
-// ★ 여기에 Gemini API 키를 입력하세요
-// 발급: https://aistudio.google.com/app/apikey (무료)
-const GEMINI_API_KEY = 'AIzaSyB9cfgonn7avlOwm6-uCEKkI7wmUyulDV0';
+
+// ── 하드코딩 분석 데이터 ──
+const SENT_DATA = {
+"26007-0038": [
+  {ko:"뛰어난 리더십의 개념에 핵심적인 것은 공감과 진정성 사이의 중요한 연결이다.",tags:[{c:"rose",t:"형용사구 문두 도치"},{c:"blue",t:"주어 후치"}],desc:"<b>도치 구문</b>: Central to ~ 가 문두 → 주어·동사 역전. 원래 어순: The critical linkage … is central to the notion of brilliant leadership.",vocab:[{w:"notion",m:"개념"},{w:"linkage",m:"연결"},{w:"authenticity",m:"진정성"}],hl:[{t:"Central to the notion of brilliant leadership",c:"hy"},{t:"the critical linkage between empathy and authenticity",c:"hb"}]},
+  {ko:"리더들이 직원 우려에 대한 민감성이 조직 목표 달성에 도움이 된다는 전제로 행동하는 반면, 뛰어난 리더들은 공감이 그 자체로 가치 있다고 믿는다.",tags:[{c:"amber",t:"While 대조 부사절"},{c:"blue",t:"that절 목적어"},{c:"teal",t:"동격 that(premise)"}],desc:"<b>While</b>: 대조의 부사절 — \"반면에\".<br><b>on the premise that</b>: \"~라는 전제 하에\" — that절이 premise와 동격.<br><b>in its own right</b>: \"그 자체로\".",vocab:[{w:"premise",m:"전제"},{w:"sensitivity",m:"민감성"},{w:"organizational",m:"조직의"}],hl:[{t:"While leaders may act on the premise that sensitivity to employee concerns is helpful in achieving organizational goals",c:"hg"},{t:"that empathy has value in its own right",c:"hb"}]},
+  {ko:"이런 점에서 공감은 목적을 위한 수단이라기보다는 오히려 덕의 핵심 요소로 진실성을 강조하는 칸트의 '성격' 개념과 일치한다.",tags:[{c:"rose",t:"less A but rather B"},{c:"blue",t:"계속적 관계절(which)"}],desc:"<b>less A but rather B</b>: \"A라기보다는 오히려 B\".<br><b>means to an end</b>: \"목적을 위한 수단\".<br><b>which underscores</b>: 계속적 관계절 → Kant's notion 부연.",vocab:[{w:"consistent with",m:"~와 일치하는"},{w:"underscore",m:"강조하다"},{w:"virtue",m:"덕, 미덕"}],hl:[{t:"less a means to an end",c:"hy"},{t:"which underscores truthfulness as a core element of virtue",c:"hb"}]},
+  {ko:"이해관계자, 특히 직원들의 관점에서, 뛰어난 리더들은 동기의 진정성을 드러내는 방식으로 행동하는 것으로 보일 것이다.",tags:[{c:"teal",t:"be seen as V-ing(수동)"},{c:"blue",t:"관계절(ways 수식)"}],desc:"<b>be seen as V-ing</b>: 수동태 지각동사 → \"~하는 것으로 보이다\".",vocab:[{w:"stakeholder",m:"이해관계자"},{w:"genuineness",m:"진정성"},{w:"motive",m:"동기"}],hl:[{t:"that reveal a genuineness of motives",c:"hb"}]},
+  {ko:"의무론에 근거한 철학적 지침에 이끌려, 뛰어난 리더의 공감적 행동은 전략적 이익보다는 개인의 진실성 감각에서 비롯된다.",tags:[{c:"green",t:"분사구문(Guided by)"},{c:"rose",t:"less A than B 비교"}],desc:"<b>Guided by</b>: 과거분사 분사구문 — 주어(conduct) 수식.<br><b>derived less from A than from B</b>: \"A보다는 B로부터 비롯되다\".",vocab:[{w:"empathetic",m:"공감적인"},{w:"integrity",m:"진실성, 도덕성"},{w:"tactical",m:"전술적인"}],hl:[{t:"Guided by the deontologically-based philosophical guidepost",c:"hg"},{t:"less from strategic or tactical interests than from one's personal sense of integrity",c:"hy"}]},
+  {ko:"그것이 곧 진정성의 규정적 특징이다: 그것은 공감을 결과 중심이 아닌 가치 중심으로 규정한다.",tags:[{c:"purple",t:"동격 콜론(:)"},{c:"teal",t:"frame A as B"},{c:"amber",t:"정답 문장"}],desc:"<b>콜론(:)</b>: 앞 문장을 구체화하는 동격 역할.<br><b>frame A as B</b>: \"A를 B로 규정하다\".<br>정답 <b>③ values-driven rather than outcome-driven</b>: 앞의 내용과 정확히 대응.",hl:[{t:"values-driven rather than outcome-driven",c:"hy"}]}
+],
+"26007-0039": [
+  {ko:"언어는 사회적으로 구성된다; 시간이 지남에 따라 우리의 문화적 집단은 사물, 사람, 장소, 경험을 나타내기 위해 다양한 추상적 기호와 소리에 합의했다.",tags:[{c:"purple",t:"세미콜론(;) 부연"},{c:"teal",t:"agree upon"},{c:"green",t:"to부정사(목적)"}],desc:"<b>세미콜론(;)</b>: 앞 문장의 구체적 설명.<br><b>agree upon</b>: \"~에 합의하다\".<br><b>to represent</b>: 목적의 to부정사.",vocab:[{w:"socially constructed",m:"사회적으로 구성된"},{w:"collective",m:"집단"},{w:"abstract",m:"추상적인"}],hl:[{t:"socially constructed",c:"hy"},{t:"to represent objects, people, places, and experiences",c:"hg"}]},
+  {ko:"반대로, 기본 감정은 생물학적으로 구성된다; 시간이 지남에 따라 진화는 중요한 생활 상황에 대한 반응을 반복적으로 만들어냈는데, 이것을 우리는 나중에 기호, 단어, 구와 연결지었다.",tags:[{c:"rose",t:"Conversely 대조"},{c:"blue",t:"대시+계속적 관계절"},{c:"teal",t:"associate A with B"}],desc:"<b>Conversely</b>: \"반대로\" — 언어(사회적) vs 감정(생물학적) 대조.<br><b>— which</b>: 대시+관계대명사 계속적 용법.<br><b>associate A with B</b>: \"A를 B와 연결짓다\".",vocab:[{w:"biologically",m:"생물학적으로"},{w:"craft",m:"만들어내다"},{w:"associate",m:"연결짓다"}],hl:[{t:"biologically constructed",c:"hy"},{t:"which we later associated with symbols, words, and phrases",c:"hb"}]},
+  {ko:"한 문화에서 독특한 감정 단어의 존재가 오직 그 문화에서만 발견되는 특별한 감정을 위한 독특한 신경 회로나 현상학의 존재를 의미하지 않는다.",tags:[{c:"amber",t:"does not imply — 핵심 논리"},{c:"blue",t:"과거분사구(후치 수식)"}],desc:"<b>does not imply</b>: 글의 핵심 → \"단어 존재 ≠ 감정 회로 존재\".<br><b>found only in that culture</b>: 과거분사구 → a special emotion 후치 수식.",vocab:[{w:"imply",m:"의미하다, 함축하다"},{w:"circuitry",m:"신경 회로"},{w:"phenomenology",m:"현상학"}],hl:[{t:"does not imply",c:"hy"},{t:"found only in that culture",c:"hb"}]},
+  {ko:"마찬가지로, 한 문화에서 특정 기본 감정 단어의 부재가 유사한 기본 감정 신경 회로의 부재를 의미하지 않는다.",tags:[{c:"blue",t:"Similarly — 논리 확장"},{c:"rose",t:"absence 반복 강조"}],desc:"<b>Similarly</b>: 앞 문장 논리를 반대 방향(부재)으로 확장.<br><b>absence</b> 반복: \"단어 없음 ≠ 감정 없음\" 강조.",vocab:[{w:"absence",m:"부재"},{w:"analogous",m:"유사한"}],hl:[{t:"absence",c:"hy"}]},
+  {ko:"감정과 언어는 서로에게 정보를 제공하고 맥락을 줄 수 있는 병렬 과정이지만, 궁극적으로 서로의 존재를 보장할 수 없다.",tags:[{c:"amber",t:"빈칸 문장"},{c:"blue",t:"관계절(processes 수식)"},{c:"rose",t:"but ultimately — 역접"}],desc:"<b>but ultimately</b>: 역접 — 빈칸에 협력 관계를 뒤집는 내용 필요.<br>정답 <b>① cannot guarantee the existence of one another</b>: 뒤 타히티 예시로 직접 증명.",hl:[{t:"parallel processes that can inform and provide context about one another",c:"hb"},{t:"cannot guarantee the existence of one another",c:"hy"}]},
+  {ko:"이것의 예는 타히티에서의 Robert Levy의 선구적 연구에 있는데, 거기서 그는 타히티인들이 '슬픔'과 '비통함'에 대한 단어가 없다는 것을 발견했다. 그럼에도 불구하고, 그들은 사랑하는 사람의 죽음을 받아들일 때 '아프고 이상한' 감정을 경험했다.",tags:[{c:"blue",t:"관계부사 where — 계속적"},{c:"rose",t:"Nevertheless 역접"}],desc:"<b>where</b>: 관계부사 계속적 용법 → Tahiti 부연.<br><b>Nevertheless</b>: \"그럼에도 불구하고\" — 단어 없어도 감정 존재 → 정답 직접 증명.",vocab:[{w:"pioneering",m:"선구적인"},{w:"grief",m:"비통함"},{w:"nevertheless",m:"그럼에도 불구하고"}],hl:[{t:"where he found that Tahitians had no words",c:"hb"}]}
+],
+"26007-0040": [
+  {ko:"지구를 돕고 싶다면 여러분이 선택해서 실천할 수 있는 몇 가지 꽤 큰 생활 방식의 변화가 있다.",tags:[{c:"blue",t:"유도부사 There"},{c:"blue",t:"관계절(목적격 생략)"},{c:"green",t:"if 조건 부사절"}],desc:"<b>There are + 명사</b>: 존재 구문, 주어는 lifestyle changes.<br><b>you can choose to make</b>: 목적격 관계대명사 that 생략 → lifestyle changes 수식.",vocab:[{w:"lifestyle",m:"생활 방식"},{w:"planet",m:"지구"}],hl:[{t:"you can choose to make",c:"hb"},{t:"if you want to help the planet",c:"hg"}]},
+  {ko:"예를 들어, 식물성 식단을 따르거나, 제로 웨이스트 생활을 실천하겠다고 약속할 수도 있을 것이다.",tags:[{c:"amber",t:"could — 현재 가능성"},{c:"green",t:"pledge + to부정사"}],desc:"<b>could</b>: 현재 가능한 선택지 제시 (제안).<br><b>pledge to V</b>: \"~하겠다고 약속하다\".",vocab:[{w:"plant-based diet",m:"식물성 식단"},{w:"pledge",m:"공식적으로 약속하다"},{w:"zero-waste",m:"쓰레기를 전혀 만들지 않는"}],hl:[{t:"pledge",c:"hy"},{t:"to go zero-waste",c:"hg"}]},
+  {ko:"이런 급진적인 변화를 실천하고 있는 사람들 사이에 둘러싸여 있다면, 따라 해야 한다는 압박감을 느낄 수도 있는데, 이러한 변화를 실천하지 않으면 지구를 구하려는 노력이 불충분하다고 느낄 수도 있을 것이다.",tags:[{c:"green",t:"if 부사절"},{c:"blue",t:"주격 관계절(who)"},{c:"rose",t:"pressure into V-ing"},{c:"purple",t:"콜론 — 동격 부연"}],desc:"<b>be surrounded by</b>: 수동태.<br><b>feel pressured into following suit</b>: pressure A into V-ing의 수동형. <b>follow suit</b> = 남을 따라 하다.<br><b>콜론(:)</b>: 앞 내용을 구체화.",vocab:[{w:"drastic",m:"급진적인"},{w:"follow suit",m:"따라 하다"},{w:"inadequate",m:"불충분한"}],hl:[{t:"pressured into following suit",c:"hy"},{t:"you might feel that if you don't make these changes, your efforts to save the planet are inadequate",c:"hp"}]},
+  {ko:"여러분이 듣게 될지도 모르는 것과는 달리, 식물성 식단이나 제로 웨이스트 생활은 반드시 전부 아니면 전무인 모험적 시도는 아니다.",tags:[{c:"amber",t:"Despite + what절"},{c:"blue",t:"관계대명사 what"},{c:"rose",t:"not necessarily — 부분 부정"}],desc:"<b>Despite</b>: 전치사 → 뒤에 what절 (접속사 although와 구별!).<br><b>what you might hear</b>: 선행사 포함 관계대명사.<br><b>not necessarily</b>: \"반드시 ~인 것은 아니다\" (부분 부정).",vocab:[{w:"all-or-nothing",m:"전부 아니면 전무"},{w:"venture",m:"모험적 시도"},{w:"necessarily",m:"반드시"}],hl:[{t:"what you might hear",c:"hb"},{t:"not necessarily an all-or-nothing venture",c:"hy"}]},
+  {ko:"고기와 유제품 섭취를 조금이라도 줄이는 것이 전혀 줄이지 않는 것보다 낫고, 가능하다면 과일, 채소, 곡물을 포장되지 않은 채로 사는 것이 항상 비닐에 포장된 것을 사는 것보다 낫다.",tags:[{c:"blue",t:"동명사 주어 ×2"},{c:"amber",t:"A is better than B"},{c:"teal",t:"과거분사(목적격보어)"},{c:"purple",t:"세미콜론 병렬"}],desc:"<b>Reducing ~/buying ~</b>: 동명사구 주어 → 단수 is.<br><b>not doing so</b>: so = reducing your intake 대동사.<br><b>wrapped in plastic</b>: 과거분사구 → them 수식.",vocab:[{w:"dairy",m:"유제품"},{w:"intake",m:"섭취"},{w:"loose",m:"포장되지 않은"},{w:"veg",m:"채소"}],hl:[{t:"Reducing your meat and dairy intake a little",c:"hb"},{t:"buying fruit, veg and grains loose when you can",c:"hb"}]},
+  {ko:"사실, 변화를 만들기 위해 비건이나 제로 웨이스트 생활 방식을 완벽하게 따를 필요는 없다.",tags:[{c:"rose",t:"don't have to — 불필요"},{c:"green",t:"to부정사(목적)"}],desc:"<b>don't have to</b>: \"~할 필요 없다\" (mustn't=금지와 구별!).<br><b>to make a difference</b>: 목적의 to부정사.",vocab:[{w:"vegan",m:"비건"},{w:"make a difference",m:"의미 있는 변화를 가져오다"}],hl:[{t:"don't have to",c:"hy"},{t:"to make a difference",c:"hg"}]},
+  {ko:"여러분이 할 수 있는 곳에서 그리고 할 수 있는 방식으로 작은 변화를 만드는 것이 진정으로 중요한 것이다.",tags:[{c:"blue",t:"동명사 주어"},{c:"amber",t:"관계부사 where/how"},{c:"blue",t:"what절(보어)"}],desc:"<b>Making little changes</b>: 동명사구 주어 → 단수 is.<br><b>where/how you can</b>: 관계부사절 (동사 생략).<br><b>what truly counts</b>: 보어 명사절. <b>count</b> = 중요하다(자동사).",vocab:[{w:"count",m:"중요하다"},{w:"truly",m:"진정으로"}],hl:[{t:"Making little changes where you can and how you can",c:"hb"},{t:"what truly counts",c:"hb"}]}
+],
+"26007-0041": [
+  {ko:"소득이 증가하면 수요량도 증가할 것이다. 소득이 감소하면 수요도 감소할 것이다.",tags:[{c:"green",t:"When 시간 부사절"},{c:"rose",t:"So+조동사+주어 — 긍정 도치"}],desc:"<b>So + 조동사 + 주어</b>: 긍정 도치 → \"~도 마찬가지이다\".<br><b>quantity demanded</b>: 경제 용어 → \"수요량\" (과거분사 demanded가 quantity 수식).",vocab:[{w:"quantity demanded",m:"수요량"},{w:"income",m:"소득"}],hl:[{t:"so will the quantity demanded",c:"hy"},{t:"so will demand",c:"hy"}]},
+  {ko:"그러나, 여러분의 소득이 두 배로 늘어난다고 해서 항상 두 배만큼 많은 양의 특정 재화나 서비스를 구입하지는 않을 것이다.",tags:[{c:"green",t:"if 조건절"},{c:"amber",t:"배수사 + as ~ as"}],desc:"<b>However</b>: 역접 → 한계효용 개념 도입.<br><b>twice as much (as)</b>: 배수 비교 구문 → \"두 배만큼 많은\".",vocab:[{w:"double",m:"두 배가 되다"},{w:"particular",m:"특정한"}],hl:[{t:"twice as much",c:"hy"},{t:"if your income doubles",c:"hg"}]},
+  {ko:"예를 들어, 여러분이 아무리 부자라 하더라도 먹고 싶어 하는 아이스크림 통수에는 한계가 있다.",tags:[{c:"rose",t:"only so many — 상한선"},{c:"blue",t:"관계절(목적격 생략)"},{c:"green",t:"no matter how — 양보"}],desc:"<b>only so many</b>: \"그만큼만, 한계가 있는\" → 수요의 상한선.<br><b>no matter how wealthy</b>: 복합관계부사 → \"아무리 ~라 해도\".",vocab:[{w:"tub",m:"통"},{w:"wealthy",m:"부유한"}],hl:[{t:"only so many",c:"hy"},{t:"no matter how wealthy you are",c:"hg"}]},
+  {ko:"한계 효용은 어떤 재화나 서비스의 각 단위가 처음 단위보다 조금씩 덜 유용하다는 개념이다.",tags:[{c:"blue",t:"동격 that절"},{c:"amber",t:"비교급 less ~ than"}],desc:"<b>the concept that ~</b>: that절이 the concept와 동격 (동격의 that).<br><b>a little less useful than</b>: 비교급 수식.",vocab:[{w:"marginal utility",m:"한계 효용"},{w:"unit",m:"단위"}],hl:[{t:"the concept that each unit of a good or service is a little less useful to you than the first",c:"hb"}]},
+  {ko:"어느 시점이 되면 더 이상 그것을 원하지 않게 되고, 한계 효용은 0으로 떨어진다.",tags:[{c:"amber",t:"drops to zero — 핵심"}],desc:"한계효용 이론의 핵심 결론. 이 '0으로 수렴'이 다음 빈칸의 반례(스포츠)와 대비됨.",hl:[{t:"drops to zero",c:"hy"}]},
+  {ko:"우리는 프로 팀 스포츠가 이 가정에 상반된다는 것을 알 수 있다. 팬(소비자)들은 많은 경우 더 많은 경기를 관람하고 싶어 한다.",tags:[{c:"amber",t:"빈칸 문장"},{c:"rose",t:"contradict — 반증 신호"}],desc:"<b>contradict this assumption</b>: 한계효용 이론에 반하는 예외 선언.<br>정답 <b>⑤ professional team sports contradict this assumption</b>.",vocab:[{w:"contradict",m:"상반되다, 반박하다"},{w:"assumption",m:"가정"}],hl:[{t:"professional team sports contradict this assumption",c:"hy"}]},
+  {ko:"우리는 최근 몇 년 동안 TV 생중계 스포츠 경기 수의 증가와 새로운 대회나 경기 방식의 출현, 추가 경기 편성을 위한 리그 개편의 확대를 통해 이것의 사례가 발생하는 것을 보았다.",tags:[{c:"teal",t:"지각동사 see + 목적보어"},{c:"green",t:"to부정사(목적)"}],desc:"<b>see + O + 원형부정사</b>: 지각동사 구문 → \"~하는 것을 보다\".<br><b>play out</b>: \"(상황이) 펼쳐지다, 발생하다\".",vocab:[{w:"advent",m:"출현"},{w:"fixture",m:"(예정된) 경기"},{w:"expansion",m:"확대"}],hl:[{t:"play out",c:"hy"}]}
+],
+"26007-0047": [
+  {ko:"멜로디는 각 음의 절대값이 아니라 시간에 걸친 연속적인 음들의 패턴이나 관계에 의해 정의된다; 대부분의 사람들은 이전에 들은 것보다 높거나 낮은 조성으로 연주되는 멜로디를 인식하는 데 어려움이 없다.",tags:[{c:"rose",t:"not A but B"},{c:"amber",t:"have no trouble V-ing"},{c:"blue",t:"관계절"}],desc:"<b>not A but B</b>: \"A가 아니라 B\" — 절대음(A) vs 음 간 관계(B). 글의 핵심 대비.<br><b>have no trouble V-ing</b>: \"~하는 데 어려움이 없다\".",vocab:[{w:"absolute",m:"절대적인"},{w:"pitch",m:"음(높낮이)"},{w:"successive",m:"연속적인"}],hl:[{t:"not by the absolute value of each pitch, but by the pattern or relation of successive pitches across time",c:"hy"}]},
+  {ko:"실제로, 많은 멜로디는 '올바른' 시작 음이 없다; 그것들은 그냥 공간에서 자유롭게 떠다니며, 어디서든 시작한다.",tags:[{c:"purple",t:"세미콜론(;)"},{c:"green",t:"분사구문(starting)"}],desc:"<b>세미콜론</b>: 앞 내용 부연.<br><b>starting anywhere</b>: 분사구문 → 주어(they) 부연.",hl:[{t:"float freely",c:"hy"},{t:"starting anywhere",c:"hg"}]},
+  {ko:"그렇다면 멜로디에 대해 생각하는 한 가지 방법은 조성, 템포, 악기 편성 등의 특정 조합에서 파생된 추상적 원형으로 생각하는 것이다.",tags:[{c:"blue",t:"to부정사(형용사적)"},{c:"blue",t:"관계절(prototype 수식)"}],desc:"<b>to think about a melody</b>: to부정사 → One way 수식.<br><b>that is derived from ~</b>: 관계절 → prototype 수식.",vocab:[{w:"prototype",m:"원형"},{w:"instrumentation",m:"악기 편성"},{w:"derive from",m:"~에서 파생되다"}],hl:[{t:"that is derived from specific combinations of key, tempo, instrumentation",c:"hb"}]},
+  {ko:"인지 심리학자는 멜로디가 변형에도 불구하고 정체성을 유지하는 청각적 대상이라고 말할 것이다, 마치 의자가 다른 방으로 옮기거나, 뒤집거나, 빨간색으로 칠해도 정체성을 유지하는 것처럼.",tags:[{c:"blue",t:"that절 목적어"},{c:"teal",t:"in spite of"},{c:"amber",t:"just as — 비유"},{c:"green",t:"when 부사절"}],desc:"<b>in spite of</b>: \"~에도 불구하고\" — 핵심(identity 유지).<br><b>just as</b>: 비유 접속사 → 의자 예시로 멜로디 설명.",vocab:[{w:"auditory",m:"청각의"},{w:"identity",m:"정체성"},{w:"transformation",m:"변형"}],hl:[{t:"that maintains its identity in spite of transformations",c:"hb"},{t:"just as a chair maintains its identity",c:"hg"}]},
+  {ko:"그러므로, 예를 들어, 여러분이 익숙한 것보다 더 크게 연주되는 노래를 듣더라도, 여전히 같은 노래로 인식한다.",tags:[{c:"green",t:"if 조건절"},{c:"teal",t:"identify A as B"}],desc:"<b>be accustomed to</b>: \"~에 익숙하다\".<br><b>identify A as B</b>: \"A를 B로 인식하다\" → 빈칸 개념(정체성 유지) 예시.",hl:[{t:"if you hear a song played louder than you are accustomed to",c:"hg"},{t:"the same song",c:"hy"}]},
+  {ko:"같은 원리가 노래의 절대 음정 값의 변화에도 적용되는데, 그것들 사이의 상대적 거리가 동일하게 유지되는 한 변경될 수 있다.",tags:[{c:"rose",t:"The same holds for"},{c:"blue",t:"계속적 관계절(which)"},{c:"amber",t:"so long as — 조건"}],desc:"<b>The same holds for</b>: \"같은 것이 ~에도 적용된다\".<br><b>so long as</b>: \"~하는 한\" = as long as.<br>정답 <b>④ the relative distances between them remain the same</b>: 첫 문장 핵심(절대값 아닌 관계)과 완벽 대응.",vocab:[{w:"relative",m:"상대적인"},{w:"remain",m:"유지되다"},{w:"distance",m:"거리, 간격"}],hl:[{t:"so long as the relative distances between them remain the same",c:"hy"}]}
+],
+"26007-0048": [
+  {ko:"네덜란드 뉴스 사이트 De Correspondent는 처음부터 적극적인 독자들을 통합한다는 아이디어로 탄생했다.",tags:[{c:"blue",t:"the idea of V-ing"},{c:"rose",t:"글의 중심 소재 제시"}],desc:"<b>the idea of incorporating</b>: 전치사 of + 동명사 → \"통합한다는 아이디어\".",vocab:[{w:"incorporate",m:"통합하다"},{w:"from the start",m:"처음부터"}],hl:[{t:"incorporating active readers from the start",c:"hb"}]},
+  {ko:"그 단체의 자문이 된 NYU 교수 Jay Rosen은 기자들이 전통 미디어와는 근본적으로 다른 독자와의 관계를 갖기를 기대되었는지 설명했다.",tags:[{c:"purple",t:"동격 삽입구"},{c:"blue",t:"간접의문문(how절)"}],desc:"<b>the NYU professor who ~</b>: Jay Rosen을 부연하는 동격 삽입구.<br><b>how ~ were expected to</b>: 간접의문문 → explained의 목적어.",vocab:[{w:"radically",m:"근본적으로"}],hl:[{t:"the NYU professor who became an adviser to the organisation",c:"hp"},{t:"how the journalists were expected to have a radically different relationship",c:"hb"}]},
+  {ko:"기대하는 것은 작가들이 자신의 작업물을 자신을 팔로우하고 글을 읽는 사람들과 지속적으로 공유할 것이라는 것이다.",tags:[{c:"blue",t:"that절(보어)"},{c:"blue",t:"관계대명사 what"},{c:"blue",t:"주격 관계절(who)"}],desc:"<b>Expectations are that ~</b>: that절이 주격 보어.<br><b>what they are working on</b>: what 관계대명사 → \"그들이 작업 중인 것\".",vocab:[{w:"continuously",m:"지속적으로"},{w:"stuff",m:"자료, 글"}],hl:[{t:"that writers will continuously share what they are working on",c:"hb"},{t:"who follow them and read their stuff",c:"hb"}]},
+  {ko:"그들은 새 프로젝트를 시작할 때 질문을 제기하고 공개 요청을 게시할 것이다: 그들이 알아내고 싶은 것, 이것을 제대로 하기 위해 필요한 전문성, 독자들로부터 원하는 모든 종류의 도움.",tags:[{c:"green",t:"as — 시간 부사절"},{c:"purple",t:"콜론 — 나열(동격)"}],desc:"<b>as</b>: 시간의 부사절 → \"~할 때\".<br><b>콜론(:)</b>: 뒤에 세 가지 항목 나열.",vocab:[{w:"call-out",m:"공개 도움 요청"},{w:"expertise",m:"전문성"},{w:"launch",m:"시작하다"}],hl:[{t:"as they launch new projects",c:"hg"}]},
+  {ko:"때로는 독자들이 프로젝트 자체이다.",tags:[{c:"amber",t:"밑줄 핵심 문장"},{c:"rose",t:"비유적 표현"}],desc:"<b>readers are the project</b>: 비유 → 독자가 기사를 만들어가는 존재.<br>정답 <b>⑤ readers actively help shape the content and direction of stories</b>: 앞뒤 문맥(contributions, pull useful material)과 대응.",hl:[{t:"readers are the project",c:"hy"}]},
+  {ko:"작가들은 또한 토론 스레드를 관리하는데 — 이는 댓글이 아니라 기여라고 불린다 — 최고의 추가 내용을 강조하고 유용한 자료를 진행 중인 이야기의 다음 버전에 끌어오기 위해서이다.",tags:[{c:"purple",t:"대시 삽입절"},{c:"green",t:"in order to — 목적"},{c:"teal",t:"not A but B"}],desc:"<b>— which —</b>: 대시 삽입절 → 부연. <b>not A but B</b> 구조.<br><b>in order to</b>: 목적의 to부정사 강조형.",vocab:[{w:"contribution",m:"기여"},{w:"highlight",m:"강조하다"},{w:"ongoing",m:"진행 중인"}],hl:[{t:"which are not called comments but contributions",c:"hp"},{t:"in order to highlight the best additions",c:"hg"}]}
+],
+"26007-0085": [
+  {ko:"증가하는 전 지구적 대기 온도와 해수 산성도의 현재 추세는 더 많은 CO2를 흡수하는 해양의 전반적인 능력을 감소시킨다.",tags:[{c:"green",t:"① to부정사(형용사적) ✓"}],desc:"<span class='hy'>① to absorb</span>: capacity를 수식하는 <b>형용사적 to부정사</b> → \"흡수할 능력\". ✅<br>주어: The current trend (단수) → reduces (단수 동사).",vocab:[{w:"atmospheric",m:"대기의"},{w:"acidity",m:"산성도"},{w:"capacity",m:"능력, 용량"}],hl:[{t:"① to absorb more CO2",c:"hy"}]},
+  {ko:"멈추지 않고 계속되도록 허용된다면, 이것은 잠재적으로 심해 지역의 pH를 변화시키고 탄소 입자 매몰과 관련된 중요한 과정을 방해할 수 있다.",tags:[{c:"green",t:"② 수동 분사구문 ✓"},{c:"blue",t:"과거분사구(후치 수식)"}],desc:"<span class='hy'>② allowed</span>: If (it is) allowed — 수동 분사구문. ✅<br><b>associated with</b>: 과거분사구 → processes 수식.",vocab:[{w:"unstopped",m:"멈추지 않은"},{w:"hinder",m:"방해하다"},{w:"burial",m:"매몰"}],hl:[{t:"② allowed",c:"hy"}]},
+  {ko:"마찬가지로, 해양 시스템에서 수온과 해양 산성도 사이의 복잡한 관계들이 껍데기를 가진 유기체의 석회화 속도를 침식하고 산호초의 생존을 위협한다.",tags:[{c:"rose",t:"③ eroding → erode ❌ 정답"}],desc:"<span class='hy'>③ eroding</span>: 주어 <b>complex relationships</b>의 동사 자리 — and <b>threaten</b>과 병렬이므로 동사원형 <b>erode</b>가 필요. 현재분사 eroding은 동사 역할 불가. ❌ <b>정답</b>",vocab:[{w:"calcification",m:"석회화"},{w:"shell-bearing",m:"껍데기를 가진"},{w:"organism",m:"유기체"}],hl:[{t:"③ eroding",c:"hy"}]},
+  {ko:"산호초는 지구 표면의 1% 미만을 차지하지만 모든 해양 생물다양성의 25%의 서식지이다.",tags:[{c:"green",t:"④ be home to ✓"}],desc:"<span class='hy'>④ are home to</span>: <b>be home to</b> = \"~의 서식지이다\" — 관용 표현. ✅",vocab:[{w:"biodiversity",m:"생물다양성"}],hl:[{t:"④ are home to",c:"hy"}]},
+  {ko:"금세기 말까지, 현재의 이산화탄소 배출 수준은 2천만 년 만에 가장 산성화된 해양 pH 수준을 초래할 수 있으며, 이는 해양 수질, 해양 생물과 먹이 사슬, 탄소 저장소로서 해양의 기능에 심각한 악영향을 미칠 것이다.",tags:[{c:"green",t:"⑤ 계속적 관계대명사 ✓"}],desc:"<span class='hy'>⑤ which</span>: 앞 문장 전체를 선행사로 받는 계속적 관계대명사 → 추가 설명. ✅",vocab:[{w:"adverse",m:"부정적인, 악영향의"},{w:"reservoir",m:"저장소"}],hl:[{t:"⑤ which",c:"hy"}]}
+],
+"26007-0087": [
+  {ko:"이모지는 응답할 때 우리가 매우 빠르고 효율적으로 되도록 돕는다. 그러나, 이것은 또한 의문을 제기한다: 이것이 실제로 좋은 것인가?",tags:[{c:"green",t:"help + to부정사"},{c:"rose",t:"Yet — 역접"},{c:"amber",t:"수사의문문"}],desc:"<b>help + (to) V</b>: to 생략 가능한 준사역동사.<br><b>Yet</b>: 역접 부사 → 방향 전환.<br>수사의문문: 독자에게 비판적 사고 유도.",hl:[{t:"Yet",c:"hy"},{t:"is this actually a good thing?",c:"hy"}]},
+  {ko:"우리의 소통은 이제 기술의 영향을 너무 직접적으로 받아서 둘을 분리할 수 없다.",tags:[{c:"rose",t:"so ~ that (결과)"}],desc:"<b>so ~ that …</b>: 정도·결과 구문 → \"너무 ~해서 …하다\".",hl:[{t:"so directly influenced by technology that the two cannot be separated",c:"hy"}]},
+  {ko:"기술은 우리의 효율성과 생산성을 높였지만, 그것은 양날의 검이다. 우리는 결국 원했던 것보다 덜 인간적이 될 수 있다.",tags:[{c:"amber",t:"double-edged sword — 핵심 비유"},{c:"rose",t:"end up + 형용사"}],desc:"<b>double-edged sword</b>: \"양날의 검\" — 효율 증가 vs 인간성 상실.<br><b>end up + 형용사</b>: \"결국 ~한 상태가 되다\".",vocab:[{w:"double-edged sword",m:"양날의 검"},{w:"productivity",m:"생산성"}],hl:[{t:"double-edged sword",c:"hy"},{t:"end up less human than we ever wanted",c:"hy"}]},
+  {ko:"우리가 빠름과 초생산성에 적응함에 따라, 우리의 대화는 패스트푸드 같아질 수 있고, 우리는 느린 대화를 만들고 즐기는 능력을 잃을 수 있다.",tags:[{c:"green",t:"As — 시간/비례"},{c:"amber",t:"fast food vs slow talk — 대비"}],desc:"<b>As</b>: \"~함에 따라\" (비례).<br><b>fast food / slow talk</b>: 핵심 대비 — 빠른 소통의 피상성 vs 깊은 대화 상실.",vocab:[{w:"rapidity",m:"빠름, 신속성"},{w:"hyper-productivity",m:"초생산성"}],hl:[{t:"As we adapt to rapidity and hyper-productivity",c:"hg"},{t:"fast food",c:"hy"},{t:"slow talk",c:"hy"}]},
+  {ko:"스마트폰이 도래하기 전에, 우리는 이메일 답장을 며칠 기다릴 수 있었고, 긴급한 일에는 전화를 했다. 우리는 이 두 가지 소통 방식 간의 구분을 알고 있었다.",tags:[{c:"green",t:"Before 시간 부사구"}],desc:"과거와의 대비: 스마트폰 이전에는 소통 방식 간 경계가 존재했음.",vocab:[{w:"urgent",m:"긴급한"},{w:"division",m:"구분, 분리"}],hl:[{t:"Before the arrival of the smartphone",c:"hg"}]},
+  {ko:"스마트폰 시대에, 우리는 기다릴 수 없고 기다리지도 않는다. 우리는 모든 것에 대해 즉각적인 답변을 기대한다.",tags:[{c:"rose",t:"cannot and do not — 병렬 강조"}],desc:"<b>cannot and do not wait</b>: 조동사·do의 병렬 → 강조.<br>정답 <b>⑤ Fading Deep Conversations in the Smartphone Era</b>: 글 전체 주제와 일치.",hl:[{t:"cannot and do not wait",c:"hy"},{t:"immediate answer",c:"hy"}]}
+],
+"26007-0089": [
+  {ko:"과일 가공 부문의 쓰레기나 잔여물을 활용하는 것이 최근 농산물 가공 기업들에게 중요한 과제가 되었고 환경에 부정적인 영향을 미친다.",tags:[{c:"blue",t:"동명사 주어"},{c:"rose",t:"has become / has — 병렬"}],desc:"<b>Utilizing …</b>: 동명사 주어 → 단수 has.<br>두 서술어 has become과 has a negative influence가 and로 병렬.",vocab:[{w:"residue",m:"잔여물"},{w:"agro-processing",m:"농산물 가공"}],hl:[{t:"Utilizing trash or residues from the fruit processing sector",c:"hb"}]},
+  {ko:"과일 가공 산업은 매립지나 강에 버려지는 많은 폐기물을 생산하며, 생태계를 위협한다.",tags:[{c:"blue",t:"과거분사구(후치 수식)"},{c:"green",t:"분사구문(결과)"}],desc:"<b>dumped in landfills or rivers</b>: 과거분사구 → waste 수식.<br><b>threatening</b>: 분사구문 → 결과.",vocab:[{w:"landfill",m:"매립지"},{w:"ecosystem",m:"생태계"}],hl:[{t:"dumped in landfills or rivers",c:"hb"},{t:"threatening the ecosystem",c:"hg"}]},
+  {ko:"따라서, 그것을 재활용하거나, 가축 사료를 위한 자원을 제공하거나, 부가가치 상품을 추출하거나 만드는 처리 기술의 필요성이 있다.",tags:[{c:"blue",t:"관계절"},{c:"teal",t:"Therefore — 결론"}],desc:"<b>Therefore</b>: 앞 문제 상황의 결론 → 가치화 기술 필요성. 글의 주제 방향과 일치.",hl:[{t:"that recycle it, provide resources for livestock feed, or extract or create goods with added value",c:"hb"}]},
+  {ko:"과일 가공 산업의 폐기물을 귀중한 제품으로 전환함으로써 환경 악화를 줄이고, 에너지 안보를 높이고, 온실가스 배출을 줄이는 것이 가능하다.",tags:[{c:"blue",t:"가주어 It — 진주어 to부정사"},{c:"rose",t:"by V-ing — 수단"}],desc:"<b>It is possible to V</b>: 가주어-진주어 구문.<br><b>by turning wastes into</b>: 수단 → \"전환함으로써\". 글의 주제(가치화 가능성)와 일치.",hl:[{t:"by turning wastes collected from the fruit processing industry into valuable products",c:"hg"}]},
+  {ko:"과일 가공 폐기물 사용이 식품 산업이 부가가치 제품을 회수하고 운영을 상업적으로 실행 가능하게 만드는 데 도움이 될 수 있다고 여겨진다.",tags:[{c:"blue",t:"It is believed that — 수동"},{c:"teal",t:"help + 원형부정사"}],desc:"<b>It is believed that ~</b>: 비인칭 수동 구문.<br><b>help + (to) V</b>: help + 원형부정사.",hl:[{t:"that using fruit waste from processing can help the food industry",c:"hb"}]},
+  {ko:"산업체들은 높은 비용과 규제 요건으로 인해 지속 가능한 해결책보다 전통적인 폐기물 처리 방법을 우선시하며 식품 폐기물 처리에 투자할 재정적 인센티브가 부족하다.",tags:[{c:"rose",t:"④ 무관한 문장 ❌"},{c:"amber",t:"prioritize A over B"}],desc:"<span class='hy'>④</span>: 글 전체 주제 = \"폐기물 가치화의 필요성과 가능성\". ④는 산업계가 전통 방식을 선호·투자 기피 → 가치화에 <em>반하는</em> 내용 → 흐름 이탈. ❌ <b>정답</b>",vocab:[{w:"prioritize",m:"우선시하다"},{w:"sustainable",m:"지속 가능한"},{w:"incentive",m:"유인, 인센티브"}],hl:[{t:"prioritize traditional waste disposal methods over sustainable solutions",c:"hy"}]},
+  {ko:"이러한 관점에서, 과일 가공의 폐기물을 사용하여 부가가치 상품을 만드는 것은 유망한 연구 분야이다.",tags:[{c:"green",t:"In light of this — 결론"},{c:"blue",t:"가주어 it"}],desc:"<b>In light of this</b>: \"이를 감안하여\" → 결론 문장. 글의 주제와 일치.",vocab:[{w:"promising",m:"유망한"},{w:"value added",m:"부가가치"}],hl:[{t:"In light of this",c:"hg"},{t:"promising field of research",c:"hy"}]}
+],
+"26007-0090": [
+  {ko:"하드 스킬은 직무를 수행하기 위해 필요한 특정 절차적 기술과 기술적 전문성, 혹은 더 적절하게 말하면, 수행되어야 하는 '무엇'으로 정의된다.",tags:[{c:"blue",t:"관계절"},{c:"purple",t:"more aptly put — 삽입구"}],desc:"<b>more aptly put</b>: 삽입구 → \"더 적절하게 말하면\".<br><b>the 'what'</b>: 하드 스킬의 성격 요약. → (B)에서 These skills로 받음.",vocab:[{w:"procedural",m:"절차적인"},{w:"aptly",m:"적절하게"},{w:"expertise",m:"전문성"}],hl:[{t:"that are required to perform a job",c:"hb"},{t:"more aptly put",c:"hp"}]},
+  {ko:"(B) 이 기술들은 직무 설명서에 명확히 나열되어 있으며 보다 고도로 특화된 교육 및 훈련 프로그램을 통해 습득된다. 하드 스킬은 전문 대학 학위를 고려할 때 우리가 생각하는 기술이다.",tags:[{c:"rose",t:"(B) 첫 번째 — These로 연결"},{c:"blue",t:"관계절(목적격 생략)"}],desc:"<b>These skills</b>: 주어진 글의 hard skills를 받음 → (B)가 첫 번째.<br><b>the skills (that) we think of</b>: 목적격 관계대명사 생략.",hl:[{t:"These skills",c:"hy"}]},
+  {ko:"(C) 예로는 회계 학위가 있어야 하는 회계사, 법학 학위가 있어야 하는 변호사, 의학 학위가 있어야 하는 의사가 포함된다. 그러나 그것이 이러한 전문직 종사자들이 소프트 스킬이 필요 없다는 것을 의미하는가?",tags:[{c:"blue",t:"계속적 관계절(who) ×3"},{c:"amber",t:"수사의문문 → (A) 연결"}],desc:"<b>Examples</b>: (B)의 professional college degree 예시 → (C)가 두 번째.<br>수사의문문 → (A)의 \"We think not.\"으로 연결.",hl:[{t:"does that mean that these professionals do not need soft skills?",c:"hy"}]},
+  {ko:"(A) 우리는 그렇지 않다고 생각한다. 실제로, 이러한 소프트 속성들은 똑같이 중요하며 전문가들이 매일 직면하는 대인 서비스 지향 경제에서 번영할 수 있도록 한다. 이것이 현대 기업들이 노동 시장에 진입하는 졸업생들에게 하드 스킬과 소프트 스킬의 좋은 조합을 찾는 이유이다.",tags:[{c:"purple",t:"We think not — (C) 답변"},{c:"green",t:"allow + 목적어 + to V"},{c:"amber",t:"This is why — 결론"}],desc:"<b>We think not</b>: (C)의 수사의문문 답 → (A)가 세 번째.<br>정답 <b>③ (B)-(C)-(A)</b>.",hl:[{t:"We think not",c:"hy"},{t:"This is why",c:"hy"}]}
+],
+"26007-0091": [
+  {ko:"무역은 인간 존재의 필연적인 활동이다. 모든 시대에, 사람들은 재화, 서비스, 아이디어의 교환을 포함하는 거래에 참여해 왔다.",tags:[{c:"green",t:"① 관계절 ✓"}],desc:"<span class='hy'>① that involve</span>: 관계절 → transactions 수식. ✅",vocab:[{w:"inevitable",m:"필연적인"},{w:"transaction",m:"거래"}],hl:[{t:"① that involve the exchange of goods, services, and ideas",c:"hy"}]},
+  {ko:"무역은 사회들이 위험과 불확실성에 대한 대응을 적응시키도록 도왔을 뿐만 아니라 그들이 우호적이든 약탈적이든 집단 간 관계에서도 중심적인 역할을 했다.",tags:[{c:"rose",t:"Not only 도치"},{c:"green",t:"② be they — 고어적 양보 ✓"}],desc:"<b>Not only + 조동사 + 주어</b>: 부정어 문두 도치.<br><span class='hy'>② be they cordial or predatory</span>: 고어적 양보 도치 = whether they are ~ or ~. ✅",vocab:[{w:"cordial",m:"우호적인"},{w:"predatory",m:"약탈적인"}],hl:[{t:"② they",c:"hy"}]},
+  {ko:"사적 교환을 위한 화폐의 발명보다 훨씬 이전에, 무역의 요소들이 인류의 가장 초기 상호작용의 일부를 형성했다. 선사시대 사람들 사이에서, 재화, 서비스, 아이디어는 선물, 공물, 또는 물물교환 경제의 일부로 교환되었다.",tags:[{c:"purple",t:"Long before — 배경 제시"}],desc:"무역의 역사적 기원 설명. 화폐 이전에도 교환이 존재했음.",vocab:[{w:"prehistoric",m:"선사시대의"},{w:"tribute",m:"공물"},{w:"barter",m:"물물교환"}],hl:[{t:"Long before the invention of money",c:"hg"}]},
+  {ko:"자급자족을 유지하려고 노력한 초기 수렵-채집 공동체를 넘어, 장거리 무역을 발견할 수 있었다. 실제로, 구석기와 신석기 시대의 시작 이래로, 무역에 대한 충동은 발전해 왔으며, 결국 거대한 문명과 제국을 촉진했다.",tags:[{c:"blue",t:"관계절"},{c:"green",t:"③ strive to V ✓"},{c:"green",t:"④ 분사구문(결과) ✓"}],desc:"<span class='hy'>③ to maintain</span>: strive to V → \"~하려고 노력하다\". ✅<br><span class='hy'>④ fueling</span>: 분사구문 → 결과 (\"결국 ~을 촉진하면서\"). ✅",vocab:[{w:"strive",m:"노력하다"},{w:"self-sufficiency",m:"자급자족"},{w:"impulse",m:"충동"},{w:"immense",m:"거대한"}],hl:[{t:"③ to maintain",c:"hy"},{t:"④ fueling",c:"hy"}]},
+  {ko:"지중해, 인도양, 남중국해를 연결하는 해상 무역의 발전과 실크로드의 창조가 오늘날 우리가 세계의 현대 상업 및 무역 시스템의 기초로 인식하는 것을 확립했다.",tags:[{c:"rose",t:"⑤ how → what ❌ 정답"},{c:"amber",t:"It ~ that 강조 구문"}],desc:"<b>It was … that ~</b>: 강조 구문.<br><span class='hy'>⑤ how</span>: established의 목적어 → \"~하는 방법\"(how)이 아니라 \"~하는 것(사물)\"(what)이 필요. ❌ <b>정답</b>",vocab:[{w:"maritime",m:"해상의"},{w:"Silk Road",m:"실크로드"},{w:"commercial",m:"상업적인"}],hl:[{t:"⑤ how",c:"hy"}]}
+],
+"26007-0092": [
+  {ko:"직원들은 고용주의 성장률이 떨어지기 시작할 때 회사를 떠나 창업자가 되려는 경향이 있는데, 이는 그곳에 머무르는 매력과 창업자가 되는 기회비용을 줄인다.",tags:[{c:"green",t:"tend to V"},{c:"green",t:"when 시간절"},{c:"green",t:"분사구문(결과)"}],desc:"<b>tend to V</b>: \"~하는 경향이 있다\".<br><b>reducing</b>: 분사구문 → 앞 절의 결과.<br><b>opportunity cost</b>: \"기회비용\".",vocab:[{w:"founder",m:"창업자"},{w:"opportunity cost",m:"기회비용"},{w:"attractiveness",m:"매력"}],hl:[{t:"reducing the attractiveness of staying there and the opportunity costs of becoming founders",c:"hg"}]},
+  {ko:"직원이 떠나 창업자가 될 가능성은 또한 직원 자신의 성과와도 연결되어 있다.",tags:[{c:"blue",t:"동명사구(of의 목적어)"},{c:"teal",t:"be linked to"}],desc:"<b>the likelihood of V-ing</b>: \"~할 가능성\".<br><b>be linked to</b>: \"~와 연결되다, 관련되다\".",vocab:[{w:"likelihood",m:"가능성"},{w:"performance",m:"성과, 실적"}],hl:[{t:"an employee leaving to become a founder",c:"hb"}]},
+  {ko:"성과가 분포의 중간에 있는 직원들이 떠날 가능성이 가장 낮았고; 가능성이 가장 높은 것은 성과가 낮은 직원(\"게으름뱅이\")과 자영업으로 높은 임금을 벌 잠재력이 있는 성과가 높은 직원(\"스타\")이었다.",tags:[{c:"blue",t:"소유격 관계절(whose) ×3"},{c:"amber",t:"be likely to"}],desc:"<b>whose performance was …</b>: 소유격 관계대명사 → employees 수식.<br>역U자 패턴: 중간 성과자 < 하위·상위 성과자 순으로 창업 이직 가능성.",hl:[{t:"whose performance was in the middle of the distribution",c:"hb"},{t:"\"slugs\"",c:"hy"},{t:"\"stars\"",c:"hy"}]},
+  {ko:"고임금 직원들이 급여를 포기할 가능성이 더 낮을 수 있지만, 수년간 수입의 높은 비율을 저축했다면 그 비상금이 그들을 더 기꺼이 큰 변화를 감행하게 만들 수 있다.",tags:[{c:"green",t:"Although 양보절"},{c:"green",t:"if 조건절"},{c:"teal",t:"make + 목적어 + 형용사"}],desc:"<b>Although</b>: 양보 → \"비록 ~이지만\".<br><b>nest egg</b>: \"비상금, 저축금\" → 창업 결정의 또 다른 요인.<br>정답 <b>⑤ factors influencing employees' decision to start their own business</b>.",vocab:[{w:"nest egg",m:"비상금, 저축금"},{w:"make the leap",m:"큰 변화를 감행하다"}],hl:[{t:"nest egg",c:"hy"},{t:"make the leap",c:"hy"}]}
+],
+"26007-0133": [
+  {ko:"최근성 오류 같은 문제들은 인간의 기억이 실수하기 쉽기 때문에 발생하며, 평가자들이 평가 기간 동안 일어난 모든 것을 기억하는 것은 어렵다.",tags:[{c:"green",t:"because 이유절"},{c:"blue",t:"가주어 it — 진주어 to부정사"}],desc:"<b>because</b>: 이유의 부사절.<br><b>it is challenging for ~ to V</b>: 가주어-진주어 구문. 의미상 주어 for raters.",vocab:[{w:"recency error",m:"최근성 오류"},{w:"fallible",m:"실수하기 쉬운"},{w:"appraisal",m:"평가"}],hl:[{t:"because human memory is fallible",c:"hg"}]},
+  {ko:"이것을 해결하는 한 가지 방법은 성과 일지를 작성하는 것이다. 평가자들이 높고 낮은 성과의 사례를 기록함에 따라, 중요한 성과 사건에 대한 더 많은 문서가 있을 것이고, 실제 평가는 중요한 발생 사건들의 더 나은 반영이 될 것이다.",tags:[{c:"blue",t:"to부정사(보어)"},{c:"green",t:"As — 시간/비례"},{c:"green",t:"① better reflection ✓"}],desc:"<b>to keep</b>: 보어 역할 to부정사.<br><b>As</b>: \"~함에 따라\" (시간·비례).<br><span class='hy'>① better reflection</span>: 일지가 더 정확한 평가 근거 → 문맥 일치. ✅",vocab:[{w:"documentation",m:"문서화"},{w:"occurrence",m:"발생 사건"}],hl:[{t:"① better reflection",c:"hy"}]},
+  {ko:"물론, 이 방법의 성공은 성과 정보 기록에서의 평가자의 지속성에 달려 있는데, 이는 관리자들이 직면하는 시간 압박으로 인해 하기 어려울 수 있다.",tags:[{c:"blue",t:"계속적 관계절(which)"},{c:"green",t:"② hard to do ✓"}],desc:"<span class='hy'>② hard to do</span>: 시간 압박 때문에 어렵다 → 문맥 일치. ✅",vocab:[{w:"persistence",m:"지속성"}],hl:[{t:"② hard to do",c:"hy"}]},
+  {ko:"흥미롭게도, 일지 작성이 반드시 호감이 성과 평가에 미치는 영향을 증가시키지는 않는다. 실제로, 평가자들이 성과 일지를 작성할 때, 호감과 평가 사이에 더 강한 관계가 있는 경향이 있다.",tags:[{c:"rose",t:"③ increase → decrease ❌ 정답"},{c:"amber",t:"not necessarily — 부분 부정"}],desc:"<span class='hy'>③ increase</span>: 뒤 문장 \"stronger relationship\"이 호감의 영향이 <em>강해진다</em>는 의미 → <b>decrease</b>로 바꿔야 문맥 일치. ❌ <b>정답</b>",vocab:[{w:"liking",m:"호감"},{w:"rating",m:"평가"}],hl:[{t:"③ increase",c:"hy"}]},
+  {ko:"일지를 작성할 때, 평가자들은 좋아하는 직원에 대해서는 긍정적인 사건을, 싫어하는 직원에 대해서는 부정적인 사건을 기록할 가능성이 더 높을 수 있다.",tags:[{c:"blue",t:"It could be that — 추측"},{c:"green",t:"④ note ✓"}],desc:"<span class='hy'>④ note</span>: \"기록하다, 주목하다\" → 일지에 적는 행위 → 문맥 일치. ✅",hl:[{t:"④ note",c:"hy"}]},
+  {ko:"동시에, 연구자들은 또한 일지 작성이 성과 평가 시스템에 대한 평가자의 반응을 향상시킨다는 것을 보여주었는데, 아마도 일지 작성이 회상을 향상시키고 평가를 더 쉽게 만들기 때문일 것이다.",tags:[{c:"blue",t:"that절(목적어)"},{c:"green",t:"⑤ recall ✓"}],desc:"<span class='hy'>⑤ recall</span>: \"회상\" → 일지가 기억 회상 향상 → 문맥 일치. ✅",vocab:[{w:"recall",m:"회상, 기억 떠올리기"}],hl:[{t:"⑤ recall",c:"hy"}]}
+],
+"26007-0135": [
+  {ko:"노인들이 증가된 기억 어려움을 자주 인식하지만, 노인들의 뇌가 정보를 기록하는 방식에도 이점이 있다.",tags:[{c:"green",t:"Although 양보절"},{c:"blue",t:"the way that — 동격"}],desc:"<b>Although</b>: 양보 → \"비록 ~이지만\". 역접으로 긍정적 측면 도입.",hl:[{t:"Although older adults often notice their increased memory difficulties",c:"hg"}]},
+  {ko:"젊은 성인들의 뇌가 많은 세부 사항(그 중 일부는 중요하지 않은)으로 기억 구조를 작성하는 반면, 노인들의 기억 구조는 단지 핵심 요소만 포함할 가능성이 더 높다.",tags:[{c:"green",t:"While 대조 부사절"},{c:"purple",t:"대시 — 삽입 부연"}],desc:"<b>While</b>: 대조 → 젊은 vs 노인 기억 방식 비교.<br><b>essential elements</b>: 요약문 (A) 정답 근거 → <b>core(핵심적인)</b>.",vocab:[{w:"essential",m:"핵심적인, 필수적인"},{w:"draft",m:"작성하다"}],hl:[{t:"While younger adults' brains may be drafting memory structures with lots of details",c:"hg"},{t:"essential elements",c:"hy"}]},
+  {ko:"단지 중요한 정보만 기억하는 것은 노인들이 '나무를 보고 숲을 놓치는' 흔한 함정을 피하는 것을 더 쉽게 만들 수 있으며, 그들이 상황의 전반적인 중요성을 파악하도록 해준다.",tags:[{c:"blue",t:"동명사 주어"},{c:"blue",t:"가목적어 it"},{c:"green",t:"분사구문(결과)"}],desc:"<b>make it easier for ~ to V</b>: 가목적어 it 구문.<br><b>missing the forest for the trees</b>: \"나무를 보고 숲을 놓치다\" → 세부에 매몰돼 전체를 못 보는 것.",vocab:[{w:"pitfall",m:"함정, 오류"},{w:"grasp",m:"파악하다"},{w:"overall",m:"전반적인"}],hl:[{t:"Remembering just the critical information",c:"hb"},{t:"missing the forest for the trees",c:"hy"}]},
+  {ko:"노인들의 뇌가 기억 구조를 구축하는 방식은 또한 서로 다른 상황 사이의 공통점을 파악하는 것과 한 맥락에서 습득된 지식이 당면한 상황에 어떻게 적용될 수 있는지 이해하는 것을 더 쉽게 만들 수 있다.",tags:[{c:"green",t:"to V — 병렬 ×2"},{c:"blue",t:"간접의문문(how)"}],desc:"<b>commonalities</b>: \"공통점\" → 요약문 (B) 정답 근거 → <b>shared(공유된)</b>.<br><b>at hand</b>: \"당면한, 가까이 있는\".",vocab:[{w:"commonality",m:"공통점"},{w:"context",m:"맥락"},{w:"at hand",m:"당면한"}],hl:[{t:"commonalities between different situations",c:"hy"},{t:"how knowledge acquired in one context can be applied",c:"hb"}]},
+  {ko:"실제로, 노화와 함께 오는 지혜 중 일부는 노화하는 뇌가 기억 구조를 구축하는 방식의 변화에 기인할 수 있다.",tags:[{c:"blue",t:"관계절(wisdom 수식)"},{c:"teal",t:"be attributable to"}],desc:"<b>be attributable to</b>: \"~에 기인하다, ~의 탓이다\".<br>글의 결론 — 노인의 기억 방식 변화가 지혜의 원천.",vocab:[{w:"wisdom",m:"지혜"},{w:"attributable to",m:"~에 기인하는"},{w:"aging",m:"노화"}],hl:[{t:"that comes with aging",c:"hb"},{t:"wisdom",c:"hy"}]}
+],
+"26007-0140": [
+  {ko:"그러나, 별을 관찰하는 것에 전적으로 의존하는 것은 별이 구름, 안개, 또는 날리는 눈에 의해 자주 가려졌기 때문에 완전히 비실용적일 것이다.",tags:[{c:"rose",t:"However — 역접 신호"},{c:"blue",t:"동명사 주어"},{c:"green",t:"as — 이유 부사절"}],desc:"<b>However</b>: 역접 → 앞에 별의 유용성, 뒤에 한계가 와야 함 → 삽입 위치 ③의 근거.<br><b>as</b>: 이유의 접속사 → \"왜냐하면 ~이기 때문에\".",vocab:[{w:"impractical",m:"비실용적인"},{w:"obscure",m:"가리다"},{w:"frequently",m:"자주"}],hl:[{t:"However",c:"hy"},{t:"as the stars were frequently obscured by cloud, fog, or blowing snow",c:"hg"}]},
+  {ko:"이누이트는 별을 항법 도구 중 하나로 사용했으며, 별의 겉보기 이동에 대한 주기적인 조정을 했다.",tags:[{c:"green",t:"분사구문(동시)"}],desc:"<b>making periodic adjustments</b>: 분사구문 → 동시 동작.<br>별의 유용성 소개 → 삽입 문장(그러나, 한계)이 ② 뒤에 들어가야 함.",hl:[{t:"making periodic adjustments for the star's apparent movement",c:"hg"}]},
+  {ko:"그들의 계산은 계절적·야간적 주기와 관련하여 별과 별자리 위치에 대한 철저한 지식을 포함했다. ( ② ) 거의 1년에 5개월 동안, 극도로 긴 낮 때문에 별을 전혀 관찰할 수 없었다. ( ③ ) 결과적으로, 별 관찰은 풍향, 눈더미, 지형지물, 해류 등과 함께 항법 방법의 한 측면으로 사용되었다.",tags:[{c:"amber",t:"삽입 위치 ③"},{c:"purple",t:"Consequently — 결과 연결"}],desc:"삽입 위치 분석:<br>• ② 앞: 별 계산 설명(긍정) → <b>삽입 문장(However + 한계)</b> ✅<br>• ③ 뒤: <b>Consequently</b>(결과) → \"별이 가려짐\"이 원인, \"다른 방법도 함께\"가 결과 → 완벽한 논리.",vocab:[{w:"constellation",m:"별자리"},{w:"nocturnal",m:"야간의"},{w:"snowdrift",m:"바람에 쌓인 눈더미"}],hl:[{t:"Consequently",c:"hy"}]},
+  {ko:"움직이는 해빙 위를 여행하면서, 길 찾는 사람들은 얼음의 이동과 그 위에서의 자신의 이동을 감안하여 방향을 수정했다.",tags:[{c:"green",t:"While V-ing — 분사구문"},{c:"green",t:"allow for — 분사구문"}],desc:"<b>While travelling</b>: 시간 분사구문.<br><b>allowing for</b>: 분사구문 → \"~을 감안하여\".",vocab:[{w:"wayfinder",m:"길 찾는 사람, 항법사"},{w:"passage",m:"이동, 통과"},{w:"allow for",m:"감안하다"}],hl:[{t:"While often travelling on moving sea ice",c:"hg"},{t:"allowing for the movement of the ice",c:"hg"}]},
+  {ko:"사냥꾼들은 또한 썰매 개와 바다코끼리, 새 같은 다른 동물들의 행동에서 항법적 통찰을 얻었다.",tags:[{c:"teal",t:"draw A from B"}],desc:"<b>draw A from B</b>: \"B에서 A를 얻다/끌어내다\".",vocab:[{w:"navigational insight",m:"항법적 통찰"},{w:"sled dog",m:"썰매 개"},{w:"walrus",m:"바다코끼리"}],hl:[{t:"drew navigational insight from the behaviour",c:"hy"}]}
+],
+"26007-0141": [
+  {ko:"떠나려는 충동은 동물의 관점에서 이해하기 쉽다.",tags:[{c:"green",t:"to부정사(형용사적)"},{c:"blue",t:"가주어 it 생략형"}],desc:"<b>to leave</b>: to부정사 → urge 수식.<br><b>is easy to understand</b>: to부정사 부사적 용법.",hl:[{t:"to leave",c:"hg"}]},
+  {ko:"포유동물은 포식자가 숨어있을 때 무리 짓고 안전할 때 흩어진다.",tags:[{c:"green",t:"when 시간절 ×2"},{c:"amber",t:"cluster vs spread out — 대비"}],desc:"<b>cluster / spread out</b>: 대비 → 위험 시 집단, 안전 시 분산.",vocab:[{w:"cluster",m:"무리 짓다"},{w:"predator",m:"포식자"},{w:"lurk",m:"숨어있다"},{w:"spread out",m:"흩어지다"}],hl:[{t:"cluster",c:"hy"},{t:"spread out",c:"hy"}]},
+  {ko:"호랑이와 오랑우탄은 포식자가 없는 유일한 포유동물이자 혼자 사는 유일한 포유동물이다.",tags:[{c:"blue",t:"전치사구(명사 수식)"},{c:"blue",t:"주격 관계절"}],desc:"포식자 없는 동물만 혼자 살 수 있다 → 인간의 집단 이탈은 안전할 때만 가능.",hl:[{t:"with no predators",c:"hb"},{t:"who live alone",c:"hb"}]},
+  {ko:"인간이 어떻게 거리를 둠으로써 갈등을 피하려 할지 이해하기 쉽다. 그것은 자원에 대한 접근을 향상시킬 뿐만 아니라, 위계질서의 맨 아래에 있는 것으로부터 해방시켜 준다.",tags:[{c:"blue",t:"간접의문문(how)"},{c:"rose",t:"Not only 도치"}],desc:"<b>how 간접의문문</b>: see의 목적어.<br><b>Not only does it …, but (also)</b>: 부정어 도치 → 강조.",vocab:[{w:"hierarchy",m:"위계질서"},{w:"access to",m:"~에 대한 접근"}],hl:[{t:"how humans would try to avoid conflict by spacing themselves out",c:"hb"},{t:"Not only",c:"hy"}]},
+  {ko:"만약 다른 사람들을 설득해 함께 떠난다면, 당신은 갑자기 우월한 위치에 있게 된다. 일부 사람들은 출생 집단을 떠났을 때 죽었지만, 다른 사람들은 계속해서 새로운 정착지를 만들었는데 그것도 결국은 분열될 것이었다.",tags:[{c:"green",t:"if 조건절"},{c:"blue",t:"관계절(settlements 수식)"},{c:"green",t:"go on to V"}],desc:"<b>one-up position</b>: \"우월한 위치\" → 지위 상승 근거.<br><b>go on to V</b>: \"계속해서 ~하다\".",vocab:[{w:"perish",m:"죽다, 소멸하다"},{w:"natal",m:"출생의"},{w:"settlement",m:"정착지"},{w:"fissure",m:"분열되다"}],hl:[{t:"one-up position",c:"hy"},{t:"that would fissure themselves in time",c:"hb"}]},
+  {ko:"떠나는 것은 직접적인 갈등에서 이길 것을 기대하지 않을 때 지위를 높이는 효과적인 방법이다.",tags:[{c:"blue",t:"동명사 주어"},{c:"green",t:"to부정사(형용사적)"},{c:"green",t:"when 조건절"}],desc:"<b>Leaving(= quit)</b>: 요약문 (A) 정답 근거 → <b>quit</b>.<br><b>raise your status(= elevate)</b>: 요약문 (B) 정답 근거 → <b>elevate</b>.<br>정답 <b>③ quit / elevate</b>.",hl:[{t:"Leaving",c:"hb"},{t:"raise your status",c:"hy"}]}
+],
+"26007-0142": [
+  {ko:"무언가를 기억하는 행위는 원래 경험에 관여했던 뉴런들을 다시 활성화하는 과정이다.",tags:[{c:"blue",t:"동명사(of의 목적어)"},{c:"blue",t:"관계절(neurons 수식)"}],desc:"<b>bring back on line</b>: \"다시 활성화하다\".<br><b>that were involved in</b>: 관계절 → those neurons 수식.",vocab:[{w:"neuron",m:"뉴런, 신경세포"},{w:"involve",m:"관여하다, 포함하다"}],hl:[{t:"bringing back on line those neurons",c:"hb"},{t:"that were involved in the original experience",c:"hb"}]},
+  {ko:"뉴런들은 일이 일어나고 있을 때 세상을 우리에게 표현하며, 우리가 그것을 회상할 때, 그 동일한 뉴런들이 그것을 우리에게 다시 표현한다.",tags:[{c:"green",t:"as — 시간 부사절"},{c:"green",t:"① same ✓"}],desc:"<span class='hy'>① same</span>: 기억 시에도 <em>동일한</em> 뉴런이 재활성화 → 문맥 일치. ✅",hl:[{t:"① same",c:"hy"},{t:"as the thing is happening",c:"hg"},{t:"as we recall it",c:"hg"}]},
+  {ko:"일단 그 뉴런들이 원래 사건 동안의 방식과 유사하게 활성화되면, 우리는 기억을 원래 사건의 저해상도 재생으로 경험한다.",tags:[{c:"green",t:"Once 시간절"},{c:"teal",t:"get + 목적어 + to V"},{c:"green",t:"② lower-resolution ✓"}],desc:"<b>get + O + to V</b>: 사역 → \"~가 ~하게 만들다\".<br><span class='hy'>② lower-resolution</span>: 기억은 원본보다 해상도가 낮다 → 문맥 일치. ✅",vocab:[{w:"lower-resolution",m:"저해상도의"},{w:"replay",m:"재생"}],hl:[{t:"② lower-resolution",c:"hy"},{t:"Once we get those neurons to become active",c:"hg"}]},
+  {ko:"그러나 기억하는 것은 불완전하다; 지시들이 약하고 저하되어, 실제 경험의 희미하고 종종 부정확한 복사본에 불과한 표현으로 이어진다.",tags:[{c:"green",t:"③ imperfect ✓"},{c:"green",t:"leading to — 분사구문(결과)"}],desc:"<span class='hy'>③ imperfect</span>: \"불완전한\" → 뒤의 \"weak and degraded\"와 일치. ✅<br><b>leading to</b>: 분사구문 → 결과.",vocab:[{w:"degraded",m:"저하된"},{w:"inaccurate",m:"부정확한"},{w:"dim",m:"희미한"}],hl:[{t:"③ imperfect",c:"hy"},{t:"leading to a representation that is only a dim and often inaccurate copy",c:"hg"}]},
+  {ko:"기억은 허구이다. 그것은 우리에게 사실로 제시될 수 있지만 왜곡에 매우 저항적이다. 기억은 단순히 재생이 아니라 재작성이다.",tags:[{c:"green",t:"④ fiction ✓"},{c:"rose",t:"⑤ resistant → susceptible ❌ 정답"},{c:"amber",t:"not just A but B"}],desc:"<span class='hy'>④ fiction</span>: 기억은 허구 → 앞의 \"inaccurate copy\"와 일치. ✅<br><span class='hy'>⑤ resistant</span>: 앞에서 기억은 \"희미하고 부정확한\", \"허구\", \"재작성\" → 왜곡에 <em>취약</em>해야 일치. <b>susceptible(취약한)</b>으로 바꿔야 함. ❌ <b>정답</b>",vocab:[{w:"resistant",m:"저항하는"},{w:"susceptible",m:"취약한, 영향받기 쉬운"},{w:"distortion",m:"왜곡"}],hl:[{t:"④ fiction",c:"hy"},{t:"⑤ resistant",c:"hy"},{t:"not just a replaying, but a rewriting",c:"hy"}]}
+],
+"26007-0143/44": [
+  {ko:"다윈은 유머와 관련된 어떤 종류의 진화적 이점이 있을 것이라고 말했으며, 인간이 그것을 직접적으로 발전시킨 것은 그것이 수많은 긍정적 특성을 가지고 있기 때문인 것으로 실제로 보인다.",tags:[{c:"blue",t:"that절 목적어 ×2"},{c:"rose",t:"evolutionary advantage — 핵심"}],desc:"<b>must be</b>: 강한 추측 → \"~임에 틀림없다\".<br><b>evolutionary advantage</b>: 제목 근거 → <b>① The Evolutionary Roots of Humour</b>.",vocab:[{w:"evolutionary advantage",m:"진화적 이점"},{w:"property",m:"특성"}],hl:[{t:"evolutionary advantage",c:"hy"}]},
+  {ko:"웃음은 아마도 에너지를 소모하고, 웃음이 만드는 소음은 초기 조상들을 포식자에게 취약하게 만들었을 수 있지만, 이러한 잠재적 문제들은 이점에 의해 훨씬 능가된다.",tags:[{c:"blue",t:"과거분사구(noise 수식)"},{c:"green",t:"(a) outweighed ✓"}],desc:"<span class='hy'>(a) outweighed</span>: \"~보다 더 중요하다, 능가하다\". far = 비교급 강조. 이점이 문제보다 훨씬 큼. ✅",vocab:[{w:"outweigh",m:"~보다 더 중요하다"},{w:"vulnerable",m:"취약한"}],hl:[{t:"(a) outweighed",c:"hy"},{t:"far outweighed by the benefits",c:"hy"}]},
+  {ko:"일부는 유머러스한 교류와 관련된 즐거움이 사회적 그루밍에서 비롯된 즐거움을 대체했다고 주장한다: 웃음과 사회적 그루밍 모두 내인성 아편제를 방출하므로 만족감이 두 가지 행동 유형을 긍정적으로 강화한다.",tags:[{c:"blue",t:"that절(목적어)"},{c:"green",t:"(b) positively reinforce ✓"}],desc:"<span class='hy'>(b) positively reinforce</span>: 두 행동 모두 오피오이드 방출 → 긍정적 강화 → 문맥 일치. ✅",vocab:[{w:"grooming",m:"그루밍(친밀 행동)"},{w:"endogenous opiate",m:"내인성 아편제"},{w:"gratification",m:"만족감"}],hl:[{t:"(b) positively reinforce",c:"hy"}]},
+  {ko:"따라서, 유머의 초기 기능 중 하나는 사회적 윤활유로서의 역할을 했던 것으로 보이며, 유머와 웃음의 근본적인 진화적 목적은 사람들 사이의 협력을 촉진하는 것이었다; 본질적으로, 웃음 반응은 협력할 준비가 되어 있고 능력이 있다는 신호이다.",tags:[{c:"blue",t:"that절"},{c:"green",t:"(c) facilitate ✓"},{c:"purple",t:"세미콜론 — 부연"}],desc:"<span class='hy'>(c) facilitate</span>: \"촉진하다\" → 협력 촉진 → 문맥 일치. ✅<br><b>social lubricant</b>: \"사회적 윤활유\" — 유머가 관계를 부드럽게 함.",vocab:[{w:"lubricant",m:"윤활유"},{w:"facilitate",m:"촉진하다"},{w:"signal",m:"신호를 보내다"}],hl:[{t:"(c) facilitate",c:"hy"},{t:"social lubricant",c:"hy"}]},
+  {ko:"영장류 관찰은 유머가 모의 공격에 참여하고 사회적 갈등이 해결될 수 있는 안전한 공간을 만드는 필요와 연결될 수 있음을 시사한다.",tags:[{c:"blue",t:"that절"},{c:"green",t:"(d) resolved ✓"},{c:"blue",t:"관계절(spaces 수식)"}],desc:"<span class='hy'>(d) resolved</span>: 갈등을 \"해결\"하는 안전 공간 → 문맥 일치. ✅",vocab:[{w:"primate",m:"영장류"},{w:"mock-aggression",m:"모의 공격"},{w:"partake in",m:"~에 참가하다"}],hl:[{t:"(d) resolved",c:"hy"}]},
+  {ko:"마찬가지로, 인류학자들은 전통 사회의 유머가 종종 사람들 사이의 농담 관계나 개인의 어릿광대 짓의 형태를 취하며, 그 목적은 긴장을 발생시키는 것이라고 지적한다.",tags:[{c:"blue",t:"that절"},{c:"rose",t:"(e) generate → relieve ❌ 정답"},{c:"blue",t:"소유격 관계절(whose)"}],desc:"<span class='hy'>(e) generate</span>: 글 전체에서 유머의 기능 = \"갈등 해결, 협력, 사회 결속\" → 긴장을 <em>발생</em>시키는 것은 맥락 불일치 → <b>relieve(완화하다)</b>로 바꿔야 함. ❌ <b>정답</b>",vocab:[{w:"anthropologist",m:"인류학자"},{w:"clowning",m:"어릿광대 짓"},{w:"generate",m:"발생시키다"},{w:"relieve",m:"완화하다"}],hl:[{t:"(e) generate",c:"hy"}]}
+]
+};
+
+
 
 const cache = {};
 let currentIdx = 0;
 
 function naverLink(w){ return `https://en.dict.naver.com/#/search?query=${encodeURIComponent(w)}`; }
-
 function makeTag(c,t){ return `<span class="tag" style="background:var(--tag-${c});color:var(--tag-${c}-t)">${t}</span>`; }
 
 const LEGEND = `<div class="hl-legend">
@@ -242,259 +382,227 @@ const LEGEND = `<div class="hl-legend">
   <span class="hl-legend-item"><span class="hl-dot" style="background:var(--hl-p)"></span>삽입구·동격</span>
 </div>`;
 
-function splitSentences(text) {
-  // 문장 분리: .!? 뒤 공백+대문자, 또는 번호 앞
-  const sents = [];
-  const re = /[^.!?]*[.!?]+/g;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    const s = m[0].trim();
-    if (s.length > 15) sents.push(s);
-  }
-  // 남은 텍스트
-  const last = text.slice(re.lastIndex).trim();
-  if (last.length > 15) sents.push(last);
-  return sents.length ? sents : [text];
-}
-
-async function analyzeWithAI(sentence, p) {
-  const key = sentence.slice(0,60);
-  if (cache[key]) return cache[key];
-
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
-    return {ko:'⚠️ API 키를 입력해주세요. 파일 상단 GEMINI_API_KEY 변수에 키를 넣으세요.', tags:[], desc:'Google AI Studio(aistudio.google.com)에서 무료로 발급받을 수 있어요.', vocab:[], highlights:[]};
-  }
-
-  const prompt = `You are an English grammar expert for Korean CSAT (수능) students.
-Problem type: ${p.qtype}
-Sentence to analyze: "${sentence}"
-Passage (first 200 chars): "${p.passage.slice(0,200)}..."
-
-Reply ONLY with JSON (no markdown fences):
-{
-  "ko": "자연스러운 한국어 해석",
-  "highlights": [{"text":"exact phrase","type":"hy|hb|hg|hp"}],
-  "tags": [{"c":"rose|blue|amber|green|teal|purple","t":"문법포인트"}],
-  "desc": "설명 (HTML <b>태그 사용 가능, 150자 이내)",
-  "vocab": [{"w":"word","m":"뜻"}]
-}
-Rules: hy=핵심어휘/정답, hb=명사절·관계절, hg=부사절·to부정사·분사구문, hp=삽입구·동격. Max 4 vocab, 1-3 highlights, 1-3 tags.`;
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      contents: [{parts: [{text: prompt}]}],
-      generationConfig: {temperature: 0.3, maxOutputTokens: 800}
-    })
-  });
-  const data = await res.json();
-  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-  try {
-    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    cache[key] = result;
-    return result;
-  } catch(e) {
-    return {ko:'파싱 오류: ' + raw.slice(0,80), tags:[], desc:'', vocab:[], highlights:[]};
-  }
-}
-
-function applyHL(text, highlights) {
-  if (!highlights?.length) return text;
+function applyHL(text, hls) {
+  if (!hls || !hls.length) return text;
   let out = text;
-  [...highlights].sort((a,b)=>b.text.length-a.text.length).forEach(h=>{
-    const esc = h.text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    out = out.replace(new RegExp(esc,'g'), `<span class="${h.type}">${h.text}</span>`);
+  [...hls].sort((a,b)=>b.t.length-a.t.length).forEach(h=>{
+    const esc = h.t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    out = out.replace(new RegExp(esc,'g'), `<span class="${h.c}">${h.t}</span>`);
   });
   return out;
 }
 
-async function toggleSent(header, idx) {
+function splitSentences(text) {
+  const plain = text.replace(/<[^>]+>/g,'');
+  const re = /[^.!?]*[.!?]+(?=\s|$)/g;
+  const sents = [];
+  let m;
+  while((m=re.exec(plain))!==null){
+    const s=m[0].trim();
+    if(s.length>15) sents.push(s);
+  }
+  const last = plain.slice(re.lastIndex).trim();
+  if(last.length>15) sents.push(last);
+  return sents.length ? sents : [plain];
+}
+
+function renderSentCard(sentence, data, idx) {
+  const highlighted = data ? applyHL(sentence, data.hl) : sentence;
+  const tagsHtml = data ? (data.tags||[]).map(t=>makeTag(t.c,t.t)).join('') : '';
+  const vocabHtml = data ? (data.vocab||[]).map(v=>`<a class="vw" href="${naverLink(v.w)}" target="_blank">📖 ${v.w}</a>`).join('') : '';
+  return `<div class="sent-card">
+    <div class="sent-header" onclick="toggleSent(this)">
+      <span class="s-num">S${idx+1}</span>
+      <span class="s-en">${highlighted}</span>
+      <span class="s-toggle">▾</span>
+    </div>
+    <div class="sent-body">
+      ${data ? `
+      <div class="ko-line">${data.ko||''}</div>
+      <div class="gram-box">
+        <div class="gram-title">문법 · 구문 포인트</div>
+        <div class="tags">${tagsHtml}</div>
+        <div class="gram-desc">${data.desc||''}</div>
+        ${vocabHtml?`<div class="vocab-row">${vocabHtml}</div>`:''}
+      </div>` : '<div style="color:var(--muted);font-size:13px;padding:8px 0">분석 데이터가 없습니다.</div>'}
+    </div>
+  </div>`;
+}
+
+function toggleSent(header) {
   const body = header.nextElementSibling;
   const icon = header.querySelector('.s-toggle');
   const open = body.classList.toggle('open');
   icon.classList.toggle('open', open);
-  if (!open || body.dataset.done) return;
-  body.dataset.done = '1';
-
-  const rawText = header.querySelector('.s-en').textContent;
-  const p = PROBLEMS[currentIdx];
-  try {
-    const r = await analyzeWithAI(rawText, p);
-    // 헤더에 하이라이트 적용
-    header.querySelector('.s-en').innerHTML = applyHL(rawText, r.highlights);
-    const vocabHtml = (r.vocab||[]).map(v=>`<a class="vw" href="${naverLink(v.w)}" target="_blank">📖 ${v.w}</a>`).join('');
-    const tagsHtml = (r.tags||[]).map(t=>makeTag(t.c,t.t)).join('');
-    body.innerHTML = `
-      <div class="ko-line">${r.ko||''}</div>
-      <div class="gram-box">
-        <div class="gram-title">문법 · 구문 포인트</div>
-        <div class="tags">${tagsHtml}</div>
-        <div class="gram-desc">${r.desc||''}</div>
-        ${vocabHtml?`<div class="vocab-row">${vocabHtml}</div>`:''}
-      </div>`;
-  } catch(e) {
-    body.innerHTML = `<div class="ai-error">⚠️ ${e.message}</div>`;
-  }
 }
 
-const STEPS = [
-  {
-    num:1, title:'글의 구조 & 흐름 파악',
-    sub:'주제문 위치 · 글의 전개 방식 · 단락 구성',
-    prompt:(p)=>`You are a Korean CSAT English expert. Analyze this passage structure for Korean students.
-Problem type: ${p.qtype}
-Passage: "${p.passage}"
-
-Reply in Korean with this JSON (no markdown):
-{
-  "topic": "한 줄 주제 요약",
-  "structure": "글의 전개 방식 (예: 두berlins 제시→예시→결론)",
-  "key_sentence": "핵심 주제문 (영어 그대로)",
-  "key_sentence_reason": "이 문장이 핵심인 이유",
-  "flow": ["문장 흐름 포인트1", "포인트2", "포인트3"]
-}`
-  },
-  {
-    num:2, title:'핵심 표현 & 논리 연결 분석',
-    sub:'빈출 연결어 · 대조/인과 관계 · 반복 키워드',
-    prompt:(p)=>`You are a Korean CSAT English expert. Analyze key expressions and logical connections.
-Problem type: ${p.qtype}
-Passage: "${p.passage}"
-
-Reply in Korean with this JSON (no markdown):
-{
-  "keywords": [{"word":"반복 키워드","role":"역할 설명"}],
-  "connectors": [{"word":"연결어","type":"대조/인과/예시/결론 등","effect":"흐름에서의 역할"}],
-  "contrast": "대조 관계가 있다면 설명 (없으면 null)",
-  "logic": "핵심 논리 구조 한 줄 요약"
-}`
-  },
-  {
-    num:3, title:'문제 유형별 풀이 전략',
-    sub:'유형 특성 · 함정 선지 분석 · 정답 근거',
-    prompt:(p)=>`You are a Korean CSAT English expert. Give solving strategy for this specific problem type.
-Problem type: ${p.qtype}
-Passage: "${p.passage}"
-Choices: ${p.choices.join(' / ')}
-Answer: ${p.answer}번 (${p.choices[p.answer-1]})
-
-Reply in Korean with this JSON (no markdown):
-{
-  "strategy": "이 유형의 핵심 풀이 전략 (2-3문장)",
-  "answer_reason": "정답이 정답인 이유 (지문 근거 포함)",
-  "traps": ["함정 선지 설명1", "함정 선지 설명2"],
-  "tip": "이 문제에서 배울 수 있는 핵심 팁"
-}`
-  }
-];
-
-async function analyzeStep(stepIdx, btnEl) {
-  const p = PROBLEMS[currentIdx];
-  const step = STEPS[stepIdx];
-  const cacheKey = `step_${currentIdx}_${stepIdx}`;
-
-  const resultEl = btnEl.parentElement.querySelector('.step-result');
-  if (cache[cacheKey]) { renderStepResult(resultEl, cache[cacheKey], stepIdx); return; }
-
-  btnEl.style.display = 'none';
-  resultEl.innerHTML = `<div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>AI 분석 중...</span></div>`;
-
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
-    resultEl.innerHTML = `<div class="ai-error">⚠️ API 키를 입력해주세요.</div>`;
-    btnEl.style.display = '';
-    return;
-  }
-
-  try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-    const res = await fetch(url, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({contents:[{parts:[{text: step.prompt(p)}]}], generationConfig:{temperature:0.3, maxOutputTokens:1000}})
-    });
-    const data = await res.json();
-    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    cache[cacheKey] = result;
-    renderStepResult(resultEl, result, stepIdx);
-  } catch(e) {
-    resultEl.innerHTML = `<div class="ai-error">⚠️ 오류: ${e.message}</div>`;
-    btnEl.style.display = '';
-  }
-}
+// 단계별 분석 데이터 (하드코딩)
+const STEP_DATA = {
+"26007-0038": [
+  {topic:"뛰어난 리더십의 핵심은 전략적 이익이 아닌 가치에서 비롯된 공감과 진정성의 연결",structure:"개념 제시 → 일반 리더 vs 뛰어난 리더 대비 → 철학적 근거 제시 → 결론(진정성의 정의)",key_sentence:"the brilliant leader's empathetic conduct is derived less from strategic or tactical interests than it is from one's personal sense of integrity.",key_sentence_reason:"빈칸 정답의 직접적 근거 — '전략적 이익 < 개인의 진실성'이 곧 values-driven의 의미",flow:["뛰어난 리더십 = 공감 + 진정성 연결","공감은 수단이 아닌 그 자체로 가치","칸트의 '성격' 개념과 연결 → 의무론적 관점","결론: 공감을 가치 중심(values-driven)으로 규정"]},
+  {keywords:[{word:"empathy(공감)",role:"글 전체의 핵심 주제어"},{word:"authenticity(진정성)",role:"공감의 본질적 특성"},{word:"integrity(진실성)",role:"진정성의 구체적 표현"}],connectors:[{word:"While",type:"대조",effect:"일반 리더 vs 뛰어난 리더의 공감 인식 차이 대비"},{word:"rather",type:"대조",effect:"수단으로서의 공감 vs 가치로서의 공감 전환"},{word:"That, then",type:"결론",effect:"앞의 논의를 진정성 정의로 수렴"}],contrast:"일반 리더(공감=수단, 조직 목표용) vs 뛰어난 리더(공감=그 자체로 가치)",logic:"공감이 전략적 이익이 아닌 개인의 진실성에서 나올 때 진정성이 생긴다"},
+  {strategy:"빈칸 앞뒤의 대비 구조를 파악하세요. 'less from A than from B' 구문에서 A(전략적 이익)와 B(개인의 진실성)를 찾고, 빈칸이 이 대비의 결론임을 확인.",answer_reason:"'derived less from strategic interests than from personal sense of integrity' → 결과 지향이 아닌 가치 지향 → ③ values-driven rather than outcome-driven",traps:["② '도덕적 성장의 열쇠' — 직원의 도덕 성장은 언급 없음","④ '개인 성공' — 글은 개인/집단 성공 구분을 논하지 않음"],tip:"'less A than B' 비교 구문의 B가 빈칸의 내용과 직결됩니다. 빈칸 = 지문의 핵심 주장을 한 줄로 요약한 것!"}
+],
+"26007-0039": [
+  {topic:"언어와 감정은 각각 사회적·생물학적으로 구성되며 서로의 존재를 보장하지 않는다",structure:"언어=사회적 구성 → 감정=생물학적 구성 → 논리 전개(존재 ≠ 보장) → 빈칸(결론) → 타히티 예시(증거)",key_sentence:"The presence of a unique emotion word in one culture does not imply the presence of unique circuitry for a special emotion found only in that culture.",key_sentence_reason:"글의 핵심 논리 '단어 존재 ≠ 감정 회로 존재'를 직접 서술한 문장으로 빈칸 정답의 근거",flow:["언어 = 사회적 합의로 구성","감정 = 진화적으로 생물학적 구성","단어가 있다 ≠ 감정 회로가 있다","단어가 없다 ≠ 감정 회로가 없다","결론: 서로의 존재를 보장할 수 없음 → 타히티 예시로 증명"]},
+  {keywords:[{word:"socially constructed",role:"언어의 본질"},{word:"biologically constructed",role:"감정의 본질"},{word:"does not imply",role:"핵심 논리 구조 — 양방향 적용"}],connectors:[{word:"Conversely",type:"대조",effect:"언어(사회적)와 감정(생물학적)을 대조"},{word:"Similarly",type:"유사 논리 확장",effect:"'존재 → 있음' 논리를 '부재 → 없음' 방향으로 확장"},{word:"Nevertheless",type:"역접",effect:"단어 없어도 감정 존재 → 빈칸 정답 직접 증명"}],contrast:"단어 있음 ↔ 단어 없음 / 감정 있음 ↔ 감정 없음 → 서로 보장 관계가 아님",logic:"언어와 감정은 병렬적 과정이지만 서로의 존재를 보장하지 않는 독립적 체계"},
+  {strategy:"빈칸 뒤의 타히티 예시를 먼저 읽으세요. '단어 없어도(Nevertheless) 감정 경험' → 빈칸은 이 예시가 증명하는 결론입니다.",answer_reason:"타히티인들은 grief/sadness 단어가 없지만 그 감정을 경험 → 언어와 감정은 서로의 존재를 보장 못 함 → ① cannot guarantee the existence of one another",traps:["② '서로를 강화' — 지문은 이를 주장하지 않음","④ '쉽게 대체' — 오히려 반대 방향의 논리"],tip:"빈칸 뒤의 예시(Nevertheless)는 빈칸 정답의 직접 증거입니다. 예시를 먼저 읽고 역방향으로 빈칸을 채우는 전략이 효과적!"}
+],
+"26007-0040": [
+  {topic:"환경 보호 실천은 전부 아니면 전무가 아니라 할 수 있는 범위의 작은 변화로도 충분하다",structure:"큰 변화 소개 → 압박감 문제 제기 → 빈칸(핵심 주장) → 근거(비교급 예시 ×2) → 결론",key_sentence:"Making little changes where you can and how you can is what truly counts.",key_sentence_reason:"글의 결론이자 빈칸 주장을 가장 직접적으로 지지하는 문장",flow:["큰 생활 변화들 소개(식물성 식단, 제로 웨이스트)","주변 압박으로 불충분함을 느낄 수 있음","빈칸: 전부 아니면 전무가 아님(핵심 주장)","근거: 조금만 줄여도 낫다(비교급)","결론: 할 수 있는 작은 변화가 진정 중요"]},
+  {keywords:[{word:"all-or-nothing",role:"빈칸의 핵심 개념 — 이분법적 사고를 부정"},{word:"better than",role:"비교급으로 '조금이라도 실천'의 가치 강조"},{word:"counts",role:"중요하다 — 글의 결론 핵심 동사"}],connectors:[{word:"Despite",type:"대조",effect:"일반적 통념(압박감)과 글쓴이 주장 대비"},{word:"The fact is",type:"결론",effect:"앞의 논의를 '완벽할 필요 없다'로 수렴"}],contrast:"전부 아니면 전무(압박감) ↔ 작은 변화도 의미 있음(글쓴이 주장)",logic:"'할 수 있는 작은 변화'가 '전부 아니면 전무'보다 더 현실적이고 지속 가능한 환경 보호"},
+  {strategy:"빈칸 뒤의 비교급 문장(better than)들이 모두 빈칸을 지지합니다. '조금이라도 줄이면 낫다' = '전부가 아니어도 된다' = all-or-nothing이 아님",answer_reason:"뒤에서 '조금 줄이는 게 낫다', '완벽히 따를 필요 없다', '작은 변화가 중요하다' → 전부 ② not necessarily an all-or-nothing venture를 지지",traps:["① '개인 선택' — 공유/개인 구분은 글의 핵심이 아님","④ '항상 최선의 방법이 아님' — 방법 자체를 부정하는 게 아님"],tip:"Despite what you might hear = '일반적으로 알려진 것과 달리' → 빈칸은 상식을 뒤집는 내용. not necessarily(부분 부정)가 정답의 핵심!"}
+],
+"26007-0041": [
+  {topic:"한계효용 이론의 일반 법칙에 반례로 프로 스포츠는 수요가 줄지 않는다",structure:"소득-수요 관계 → 한계효용 정의 → 0으로 수렴(일반 법칙) → 빈칸(반례) → 스포츠 예시",key_sentence:"At some point, you will not want it anymore, and the marginal utility drops to zero.",key_sentence_reason:"한계효용의 핵심 원리를 서술 — 빈칸의 반례(스포츠)와 대비되는 기준점",flow:["소득 증가 → 수요량 증가(일반 원리)","소득 2배 → 반드시 2배 소비 아님","한계효용: 각 단위가 이전보다 조금 덜 유용","결국 0으로 수렴(이것이 가정)","빈칸: 스포츠는 이 가정에 반함 → 팬들은 더 많은 경기를 원함"]},
+  {keywords:[{word:"marginal utility",role:"글 전체의 핵심 경제 개념"},{word:"drops to zero",role:"한계효용 이론의 결론 — 빈칸의 반례와 대비"},{word:"contradict",role:"반례 도입의 신호어"}],connectors:[{word:"However",type:"역접",effect:"단순 수요-소득 관계에서 한계효용 개념으로 전환"},{word:"We can see that",type:"결론 도입",effect:"빈칸에 반례 결론을 도입"}],contrast:"일반 재화(한계효용 0으로 수렴) ↔ 프로 스포츠(수요가 줄지 않음)",logic:"한계효용 이론은 일반적으로 맞지만 프로 팀 스포츠는 예외적으로 수요가 계속 증가한다"},
+  {strategy:"빈칸 뒤 문장을 읽으세요. 'Fans often want MORE games' → 수요가 줄지 않음 → 한계효용(수요가 0으로 감소) 이론에 반함. 빈칸 = 뒤 내용의 주제문!",answer_reason:"뒤에서 스포츠 경기 수 증가, 새 대회 출현 등 수요 증가 사례 제시 → 한계효용 이론('drops to zero')에 상반 → ⑤ professional team sports contradict this assumption",traps:["① '게임만이 아닌 선수 기술' — 전혀 언급 없음","② '소득이 한계효용 결정' — 소득은 예시일 뿐"],tip:"'We can see that ___. Fans often want MORE' 구조에서 빈칸 = 뒤 내용의 요약/주제문. 빈칸 뒤를 먼저 읽는 습관이 중요!"}
+],
+"26007-0047": [
+  {topic:"멜로디의 정체성은 절대 음정이 아닌 음 사이의 상대적 거리(관계)에 있다",structure:"정의(not A but B) → 예시(Happy Birthday) → 비유(청각적 대상 = 의자) → 적용(크기 변화) → 빈칸(조건)",key_sentence:"Melodies are defined not by the absolute value of each pitch, but by the pattern or relation of successive pitches across time.",key_sentence_reason:"글의 핵심 주장이 명시된 첫 문장 — 빈칸 정답이 이 원리의 직접적 적용",flow:["멜로디 = 절대값이 아닌 음 간 관계로 정의","많은 멜로디는 고정 시작음 없음(Happy Birthday)","멜로디 = 추상적 원형(청각적 대상)","변형에도 정체성 유지(의자 비유)","조건: 음정 값 변경 가능 → 빈칸(상대적 거리 유지 시)"]},
+  {keywords:[{word:"absolute value",role:"부정되는 개념 — '절대값으로 정의되지 않음'"},{word:"relative distances",role:"정답의 핵심 개념 — '상대적 거리'"},{word:"identity",role:"멜로디가 유지해야 하는 것"}],connectors:[{word:"not ~ but ~",type:"대비",effect:"절대값(A) vs 패턴/관계(B) 대비 — 글 전체 핵심"},{word:"just as",type:"비유",effect:"의자 예시로 '변형에도 정체성 유지' 개념 설명"},{word:"so long as",type:"조건",effect:"빈칸 — 음정 변경의 조건 제시"}],contrast:"절대 음정값 ↔ 음 사이의 상대적 거리/관계",logic:"멜로디는 절대 음정이 아닌 음 간의 상대적 관계로 정의되므로 관계만 유지되면 음정이 바뀌어도 같은 멜로디"},
+  {strategy:"첫 문장(not A but B)이 정답의 핵심입니다. '절대값이 아닌 패턴/관계' → 빈칸 조건 = '상대적 거리가 유지되는 한'. 빈칸 앞의 'so long as'는 조건절 신호!",answer_reason:"'not by the absolute value, but by the pattern/relation' → 음이 바뀌어도 관계(relative distances)만 유지되면 같은 멜로디 → ④ the relative distances between them remain the same",traps:["① 볼륨 — 볼륨 유지는 언급 없음(예시에서 더 크게 연주해도 같은 곡)","③ 템포 — 템포 수정 여부는 글의 논점이 아님"],tip:"빈칸 앞의 'which can be changed so long as ___' → 변경 가능한 조건 = 상대적 거리 유지. 첫 문장의 핵심 개념이 마지막 빈칸에 그대로 연결!"}
+],
+"26007-0048": [
+  {topic:"De Correspondent는 독자를 수동적 독자가 아닌 기사 제작의 능동적 참여자로 본다",structure:"사이트 소개 → Jay Rosen 설명 → 구체적 기대 사항 → 밑줄 문장(핵심) → 실천 방법 → 사례",key_sentence:"Sometimes readers are the project.",key_sentence_reason:"밑줄 친 문장 자체가 핵심 — 독자가 취재 대상이 아닌 기사 제작의 주체임을 비유적으로 표현",flow:["처음부터 독자 참여 아이디어로 탄생","기자-독자 관계가 전통 미디어와 근본적으로 다름","작가가 진행 상황을 독자와 공유, 도움 요청","때로는 독자 자체가 프로젝트(핵심 주장)","discussion threads = comments가 아닌 contributions"]},
+  {keywords:[{word:"active readers",role:"글의 핵심 개념 — 수동적 독자와 반대"},{word:"project",role:"밑줄 문장의 핵심어 — 독자가 기사 제작의 주체"},{word:"contributions",role:"comments 대신 쓰인 단어 — 독자의 능동적 역할 강조"}],connectors:[{word:"Sometimes",type:"강조",effect:"밑줄 문장 앞에서 극단적 예시를 부드럽게 도입"},{word:"in order to",type:"목적",effect:"discussion thread 관리의 목적 — useful material 확보"}],contrast:"전통 미디어(독자=수동적 소비자) ↔ De Correspondent(독자=능동적 참여자·제작자)",logic:"독자를 단순 독자가 아닌 콘텐츠 제작 파트너로 보는 혁신적 저널리즘 모델"},
+  {strategy:"밑줄 문장의 비유를 해석하세요. 'readers are the PROJECT' = 독자가 기사의 방향과 내용을 함께 만드는 주체. 앞뒤 문맥(도움 요청, contributions)이 모두 이를 지지합니다.",answer_reason:"call-outs로 도움 요청, discussion → contributions, pull useful material → 모두 독자가 적극적으로 기사 내용과 방향을 만드는 것 → ⑤ readers actively help shape the content and direction of stories",traps:["③ '팁과 예시 제공' — 부분적으로만 맞고 '방향 결정'은 포함 안 됨","① '기사의 주제로 선정' — 완전히 다른 의미"],tip:"비유 밑줄 문장은 앞뒤 문맥으로 해석하세요. 앞(도움 요청) + 뒤(contributions) = 독자가 기사 자체를 만든다 → ⑤번이 가장 포괄적으로 표현!"}
+],
+"26007-0085": [
+  {topic:"해양 산성화와 온도 상승이 탄소 흡수 능력을 저하시키고 해양 생태계에 심각한 영향을 미친다",structure:"현재 추세 → 영향 ① (pH 변화) → 영향 ② (어법 오류 위치) → 산호초 → 미래 전망",key_sentence:"complex relationships between water temperatures and ocean acidity in marine systems ③ eroding calcification rates in shell-bearing organisms and threaten the survival of coral reefs.",key_sentence_reason:"어법 오류가 있는 핵심 문장 — eroding(분사)을 erode(동사)로 고쳐야 and threaten과 병렬",flow:["대기 온도↑ + 해수 산성도↑ → CO2 흡수 능력↓","허용 시 심해 pH 변화, 탄소 매몰 과정 방해","수온-산성도 관계 → 석회화↓, 산호초 생존 위협 (어법 오류)","산호초: 지표면 1% 미만이지만 해양 생물다양성 25%","21세기 말: 역대 최고 산성도 → 광범위한 악영향"]},
+  {keywords:[{word:"acidity",role:"글 전체의 핵심 변수"},{w:"capacity",m:"흡수 능력"},{word:"calcification",role:"③번 오류 문장의 핵심어"}],connectors:[{word:"Similarly",type:"유사 추가",effect:"두 번째 영향(석회화↓)을 첫 번째에 이어 추가"},{word:"By the end of the century",type:"시간",effect:"미래 전망으로 글의 심각성 강조"}],contrast:null,logic:"해양 온난화와 산성화는 CO2 흡수 능력 저하, 석회화 감소, 산호초 파괴, 해양 생태계 전반의 위기로 이어진다"},
+  {strategy:"각 번호(①~⑤)의 문법 역할을 확인하세요. ③ eroding은 주어(complex relationships)의 동사 자리이므로 and threaten과 병렬 구조를 이뤄야 합니다.",answer_reason:"주어: complex relationships / 동사 자리: ③ eroding and ④ threaten → eroding은 현재분사라 동사 역할 불가 → erode로 고쳐야 함 → 정답 ③",traps:["① to absorb: capacity 수식하는 형용사적 to부정사 ✅","② allowed: 수동 분사구문(If it is allowed) ✅","⑤ which: 앞 문장 전체를 선행사로 받는 계속적 관계대명사 ✅"],tip:"어법 문제는 병렬 구조를 먼저 확인하세요. 'A and B' 구조에서 B(threaten=동사)가 보이면 A(③)도 동사원형이어야 합니다!"}
+],
+"26007-0087": [
+  {topic:"이모지와 스마트폰이 만든 즉각적 소통 문화는 인간성과 깊은 대화를 잃게 할 수 있다",structure:"이모지의 효율성 → 문제 제기 → 기술과의 융합 → 양날의 검 → 패스트푸드 비유 → 과거 대비 → 현재",key_sentence:"As we adapt to rapidity and hyper-productivity, our conversation may become like fast food, and we may lose the ability to produce and enjoy slow talk.",key_sentence_reason:"패스트푸드 vs 슬로우 토크 비유가 글의 핵심 주장을 가장 생생하게 표현",flow:["이모지 = 빠르고 효율적이지만 → 좋은 건가?","스마트폰과 소통이 분리 불가능하게 융합","기술은 양날의 검 — 효율↑ but 인간성↓","패스트푸드 같은 대화, 슬로우 토크 능력 상실","스마트폰 이전: 기다림 가능, 소통 방식 구분","현재: 기다리지 않음, 즉각적 답변 기대"]},
+  {keywords:[{word:"double-edged sword",role:"기술의 양면성을 압축하는 핵심 비유"},{word:"fast food",role:"스마트폰 시대 소통의 피상성을 비유"},{word:"slow talk",role:"스마트폰 이전의 깊은 대화 — 상실 위기"}],connectors:[{word:"Yet",type:"역접",effect:"이모지의 효율성을 인정하다가 문제 제기로 전환"},{word:"but",type:"대조",effect:"기술의 양면성(효율 vs 인간성) 대비"}],contrast:"스마트폰 이전(기다림, 소통 방식 구분) ↔ 스마트폰 시대(즉각성, 경계 소멸)",logic:"스마트폰이 만든 즉각적 소통 문화는 효율을 높이지만 깊은 대화를 나누는 능력과 인간성을 잃게 한다"},
+  {strategy:"글의 전체 흐름은 '이모지 효율 → 그러나(Yet) → 양날의 검 → 결론'. 제목은 글의 핵심 문제(깊은 대화 소멸 + 속도의 대가)를 담아야 합니다.",answer_reason:"double-edged sword, fast food vs slow talk, 인간성 상실 → 글의 핵심 = 스마트폰 시대에 깊은 대화가 사라지는 것의 대가 → ⑤ Fading Deep Conversations in the Smartphone Era: The Price of Speed",traps:["② 'Smartphone Culture: Communication Meets Efficiency' — 효율성만 강조, 부정적 측면 빠짐","③ 'Closer Connections' — 글의 방향과 정반대"],tip:"제목 추론은 글의 '결론부'를 중심으로 하세요. 마지막 두 문장('cannot and do not wait', 'immediate answer')이 글의 핵심 문제를 압축합니다!"}
+],
+"26007-0089": [
+  {topic:"과일 가공 폐기물의 가치화는 환경·에너지 문제 해결의 유망한 분야이다",structure:"문제 제기(폐기물 처리 어려움) → 필요성 → 가능성 ① → 가능성 ② → 흐름 이탈(④) → 결론",key_sentence:"In light of this, it is a promising field of research to use wastes from the processing of fruit to create goods with value added.",key_sentence_reason:"글의 결론 문장 — 전체 흐름이 이 결론을 향해 나아감",flow:["과일 가공 폐기물 = 기업·환경 문제","재활용/가축사료/부가가치 창출 기술 필요","폐기물 → 가치 제품: 환경·에너지 효과","가공 폐기물 → 식품 산업 부가가치 회수 가능","④ (흐름 이탈: 전통 방식 선호)","결론: 유망한 연구 분야"]},
+  {keywords:[{word:"value added",role:"글의 핵심 방향 — 폐기물에서 가치 창출"},{word:"promising",role:"결론 문장의 핵심어"},{word:"prioritize(④번)",role:"흐름 이탈 문장의 핵심어 — 전통 방식 선호는 주제와 반대"}],connectors:[{word:"Therefore",type:"결론",effect:"문제 → 해결책 필요성으로 연결"},{word:"In light of this",type:"결론",effect:"전체 논의를 유망한 연구 분야로 수렴"}],contrast:"가치화 방향(①②③⑤) ↔ 전통 방식 선호(④ — 흐름 이탈)",logic:"과일 가공 폐기물을 환경 부담에서 부가가치 자원으로 전환하는 것이 필요하고 유망하다"},
+  {strategy:"무관한 문장 문제는 글의 주제 방향을 먼저 파악하세요. 이 글의 방향 = '폐기물 가치화 긍정/필요'. 이 방향에 어긋나는 문장을 찾으면 됩니다.",answer_reason:"①②③⑤ 모두 '가치화의 필요성·가능성·유망성'을 지지. ④만 '전통 방식 선호, 투자 기피' → 가치화에 반하는 내용 → 흐름 이탈 → 정답 ④",traps:["③ '비용·규제 문제' 언급처럼 보이는 ④ — 하지만 결론이 '투자 기피'라서 주제와 반대","①의 Therefore — 흐름에 맞는 결론 도출"],tip:"무관한 문장 = 주제 방향과 반대되거나, 앞뒤 문장과 논리적으로 연결되지 않는 문장. ④의 'prioritize traditional methods' = 가치화 반대 방향!"}
+],
+"26007-0090": [
+  {topic:"하드 스킬만큼 소프트 스킬도 동등하게 중요하며 현대 기업은 두 가지를 모두 원한다",structure:"주어진 글(하드 스킬 정의) → (B) 구체적 습득 방식 → (C) 예시 + 수사의문문 → (A) 답변 + 소프트 스킬 중요성",key_sentence:"these soft attributes, or 'how' something is done, are equally critical and allow professionals to thrive in the interpersonal service orientated economy faced daily.",key_sentence_reason:"소프트 스킬이 하드 스킬과 동등하게 중요하다는 글의 핵심 주장",flow:["주어진 글: 하드 스킬 = '무엇'을 해야 하는가","(B): 직무 설명서, 전문 교육으로 습득","(C): 회계사, 변호사, 의사 예시 → 소프트 스킬도 필요한가?","(A): '필요하다' 답변 + 소프트 스킬('어떻게') 중요성 강조","결론: 현대 기업은 둘 다 원함"]},
+  {keywords:[{word:"'what'",role:"하드 스킬을 요약하는 표현 — (B)의 These skills로 연결"},{word:"'how'",role:"소프트 스킬을 요약하는 표현 — (A)에서 등장"},{word:"equally critical",role:"소프트 스킬의 중요성 주장의 핵심"}],connectors:[{word:"But(C에서)",type:"역접 + 수사의문문",effect:"(C) → (A)로의 자연스러운 연결 신호"},{word:"We think not(A에서)",type:"결론",effect:"(C)의 수사의문문에 직접 답변"}],contrast:"하드 스킬('무엇') ↔ 소프트 스킬('어떻게') — 둘 다 필요",logic:"하드 스킬은 필수이지만 소프트 스킬도 동등하게 중요하므로 현대 기업은 두 가지를 모두 갖춘 인재를 원한다"},
+  {strategy:"순서 문제는 각 단락의 첫 단어와 마지막 단어를 연결하세요. 주어진 글의 'Hard skills' → (B)의 'These skills'(직접 연결). (C)의 수사의문문 → (A)의 'We think not'(직접 답변).",answer_reason:"주어진 글(정의) → (B)(These skills로 연결) → (C)(예시+수사의문문) → (A)(답변+결론) → 정답 ③ (B)-(C)-(A)",traps:["(A)가 첫 번째로 오는 것들 — 'We think not'은 반드시 질문 뒤에 와야 함","(C)가 첫 번째로 오는 것들 — Examples는 (B)의 구체화이므로 (B) 뒤에 와야 함"],tip:"글의 순서 = 수사의문문(C) → 답변(A)의 연결을 먼저 찾으세요. 이 쌍이 고정되면 나머지는 자연스럽게 결정됩니다!"}
+],
+"26007-0091": [
+  {topic:"무역은 인류 역사 전반에 걸쳐 사회를 발전시키고 문명을 형성한 필연적 활동이다",structure:"무역의 본질 → 긍정적 역할 → 화폐 이전 역사 → 선사시대 교환 → 장거리 무역 → 문명 형성 → 해상 무역(어법 오류)",key_sentence:"It was the development of maritime trade connecting the Mediterranean, Indian Ocean, and South China Sea, along with the creation of the Silk Road, that established ⑤ what we recognise today as the foundations of the world's modern commercial and trading systems.",key_sentence_reason:"어법 오류(⑤ how → what) 포함 — It ~ that 강조 구문의 목적어 자리에 what이 필요",flow:["무역 = 인간 존재의 필연적 활동","리스크 대응 + 집단 간 관계에서 중심 역할","화폐 발명 전부터 교환 존재","선사시대: 선물, 공물, 물물교환","수렵-채집 공동체 넘어 장거리 무역","구석기~신석기 → 문명·제국 형성","해상 무역 + 실크로드 → 현대 무역 체계 기초(⑤ 오류)"]},
+  {keywords:[{word:"inevitable",role:"글 전체의 첫 핵심어 — 무역은 선택이 아닌 필연"},{word:"fueling",role:"④ 분사구문 ✅ — 무역이 문명을 촉진한 결과"},{word:"how → what",role:"⑤ 어법 오류 — 목적어 자리에 방법(how)이 아닌 사물(what) 필요"}],connectors:[{word:"Not only ~ but also",type:"추가",effect:"무역의 첫 번째 역할에 두 번째 역할을 강조해서 추가"},{word:"Indeed",type:"강조",effect:"구석기 시대부터 충동이 발전해온 사실 강조"}],contrast:null,logic:"무역은 화폐 이전부터 시작해 인류 역사 전반에 걸쳐 사회를 연결하고 문명을 형성해온 필연적 활동이다"},
+  {strategy:"어법 문제는 각 번호의 문법 역할을 분석하세요. ⑤는 established의 목적어 자리 — '우리가 오늘날 ~로 인식하는 것(사물)'이 와야 하므로 what이 필요합니다.",answer_reason:"established의 목적어: 'what we recognise today as the foundations...' = '우리가 기초로 인식하는 것' → 사물을 가리키는 what 필요. how(방법)는 문맥상 맞지 않음 → 정답 ⑤",traps:["② be they cordial or predatory — 고어적 양보 도치(= whether they are) ✅","④ fueling — 결과를 나타내는 분사구문 ✅"],tip:"⑤의 'established how we recognise today' → '우리가 오늘날 인식하는 방법을 확립했다' → 어색함. 'established what we recognise today as ~' → '우리가 ~로 인식하는 것을 확립했다' → 자연스러움!"}
+],
+"26007-0092": [
+  {topic:"직원들이 창업자로 이직하는 결정에는 회사 성장률, 본인 성과, 재정적 저축 등 다양한 요인이 작용한다",structure:"이직 시기(성장률 하락) → 성과와의 연관성 → 하위·상위 성과자 이직 가능성↑ → 저축(비상금)의 역할",key_sentence:"Leaving is an effective way to raise your status when you don't expect to win a direct conflict.",key_sentence_reason:"아, 이것은 0141번 지문입니다. 0092의 핵심 문장: 'The likelihood of an employee leaving to become a founder has also been linked to the employee's own performance.'",flow:["고용주 성장률↓ → 머무름 매력↓, 기회비용↓ → 이직 경향↑","이직 가능성 = 본인 성과와도 연관","중간 성과자: 가능성 최저","하위 성과자('slugs'): 잃을 것 적어 이직 가능성↑","상위 성과자('stars'): 자영업 고소득 잠재력으로 이직 가능성↑","고임금이라도 비상금(nest egg)이 있으면 이직 가능성↑"]},
+  {keywords:[{word:"opportunity cost",role:"이직 결정의 핵심 경제적 개념"},{word:"slugs vs stars",role:"하위·상위 성과자 — 역U자 패턴의 양 극단"},{word:"nest egg",role:"고임금 직원 이직의 추가 요인"}],connectors:[{word:"Although",type:"양보",effect:"고임금 = 이직 어려움이라는 전제를 뒤집는 역할"},{word:"The likelihood ~ has also been linked to",type:"추가 요인",effect:"성장률 외에 성과라는 두 번째 요인 도입"}],contrast:"중간 성과자(이직↓) ↔ 하위·상위 성과자(이직↑) — 역U자 패턴",logic:"직원의 창업 이직 결정은 회사 성장률, 본인 성과 수준, 재정적 여유(비상금) 등 복합적 요인에 의해 결정된다"},
+  {strategy:"주제 추론은 각 단락의 핵심 내용을 포괄하는 선택지를 고르세요. 이 글은 '언제, 누가, 왜 창업자로 이직하는가'를 다양한 요인으로 설명합니다.",answer_reason:"성장률(단락1) + 성과(단락2) + 비상금(단락3) → 모두 창업 이직 결정에 영향을 미치는 요인들 → ⑤ factors influencing employees' decision to start their own business",traps:["② '재정적 저축의 영향' — 부분적으로만 맞음(전체 주제는 다양한 요인)","③ '창업 성공을 위한 단계' — 글에 단계 설명 없음"],tip:"주제 추론에서 너무 좁은 선택지(부분만 다루는)와 너무 넓은 선택지(글에 없는 내용 포함)를 소거하세요. 모든 단락을 아우르는 선택지가 정답!"}
+],
+"26007-0133": [
+  {topic:"성과 일지 작성은 평가 정확성을 높이지만 호감의 영향을 줄이지는 않는다",structure:"최근성 오류 문제 → 일지 작성 해결책 → 장점(정확성↑) → 한계(호감 영향 증가) → 그러나 평가 반응은 개선",key_sentence:"diary keeping does not necessarily ③ increase the effects of liking on performance ratings.",key_sentence_reason:"어휘 오류 문장 — increase → decrease로 바꿔야 뒤의 'stronger relationship'과 문맥 일치",flow:["최근성 오류: 기억의 한계로 최근 사건 과대평가","일지 작성으로 중요 사건 문서화 → 정확한 평가(①better ✓)","시간 압박으로 지속하기 어려움(②hard ✓)","일지가 호감의 영향을 ③increase(오류) → decrease로 수정 필요","사실: 일지 시 호감-평가 관계가 더 강해짐(stronger)","이유: 좋아하는 직원 긍정 사건 기록, 싫어하는 직원 부정 사건 기록","그러나 일지는 평가 시스템 반응을 개선(⑤recall ✓)"]},
+  {keywords:[{word:"diary keeping",role:"글의 핵심 소재 — 성과 일지 작성"},{word:"liking",role:"호감 — 일지와의 관계가 반직관적"},{word:"stronger(relationship)",role:"③번 오류 근거 — increase가 아닌 decrease가 맞음"}],connectors:[{word:"Interestingly",type:"강조",effect:"예상과 다른 결과(호감 영향 증가)를 도입"},{word:"In fact",type:"역접",effect:"'not necessarily increase'와 모순되는 실제 결과 제시"}],contrast:"일지의 기대 효과(호감 영향↓) ↔ 실제 효과(호감 영향↑)",logic:"성과 일지는 정확성을 높이지만 평가자의 호감 편향을 오히려 강화할 수 있으며, 그럼에도 전반적인 평가 시스템 만족도는 높인다"},
+  {strategy:"어휘 문제는 해당 문장의 앞뒤 문맥을 확인하세요. ③ 바로 뒤 'In fact, ~ stronger relationship' → 호감 영향이 강해진다 = ③increase가 아닌 decrease여야 문맥 일치",answer_reason:"'does not necessarily ③increase' + 'In fact, stronger relationship(호감 영향 증가)' → ③이 decrease여야 논리 일치. increase면 'In fact'가 도입하는 내용과 모순됨 → 정답 ③",traps:["① better reflection — '더 나은 반영' → 일지가 정확한 평가의 근거 → 문맥 일치 ✅","⑤ recall — '회상' → 일지가 기억 향상 → 문맥 일치 ✅"],tip:"어휘 문제에서 'In fact', 'However' 같은 연결어 앞뒤를 주목하세요. ③ 바로 뒤 'In fact'가 앞과 반대 내용을 도입 → ③의 의미가 뒤 내용과 방향이 같아야 함!"}
+],
+"26007-0135": [
+  {topic:"노인의 뇌는 핵심 정보만 기억하는 방식으로 공통점 파악과 지혜 획득에 더 유리하다",structure:"역접 도입(기억 어려움 but 이점) → 핵심 요소만 기억 → 전체 파악 용이 → 공통점 발견 용이 → 지혜",key_sentence:"The way older adults' brains build memory structures can also make it easier for them to see commonalities between different situations.",key_sentence_reason:"요약문 (B) 정답 근거(shared/공통점)를 직접 제시하는 문장",flow:["노인: 기억 어려움 BUT 정보 기록 방식의 이점도 있음","젊은이: 세부사항 많음 → 노인: 핵심 요소만(A=core)","핵심만 기억 → '나무 아닌 숲' 파악 용이","다른 상황 간 공통점(B=shared) 발견 용이","한 맥락 지식을 다른 상황에 적용 가능","결론: 이것이 노화와 함께 오는 지혜의 원천"]},
+  {keywords:[{word:"essential elements",role:"요약문 (A) 정답 근거 — core와 동의어"},{word:"commonalities",role:"요약문 (B) 정답 근거 — shared와 동의어"},{word:"wisdom",role:"글의 최종 결론 — 기억 방식 변화의 산물"}],connectors:[{word:"Although",type:"양보",effect:"기억 어려움을 인정하면서 이점으로 전환"},{word:"While",type:"대조",effect:"젊은이(세부사항) vs 노인(핵심 요소) 대비"}],contrast:"젊은이 뇌(세부사항 많은 기억) ↔ 노인 뇌(핵심 요소 중심 기억)",logic:"노인의 핵심 중심 기억 방식은 전체적 파악, 상황 간 공통점 발견, 지혜 획득에 유리하다"},
+  {strategy:"요약문의 (A), (B)를 지문에서 직접 찾으세요. (A) = essential elements → core. (B) = commonalities between different situations → shared(서로 다른 상황들이 공유하는 것)",answer_reason:"(A): 'include just the essential elements' → core(핵심적인). (B): 'see commonalities between different situations' → shared(공유된, 공통적인) → 정답 ② core / shared",traps:["① insignificant/different — insignificant는 '중요하지 않은'(핵심이 아님)","④ specific/similar — specific은 '특정한'(핵심과 다름)"],tip:"요약문 빈칸 = 지문의 핵심어를 동의어로 바꾼 것! essential elements→core, commonalities→shared처럼 1:1 대응 단어를 지문에서 먼저 찾으세요."}
+],
+"26007-0140": [
+  {topic:"이누이트는 별 관찰 외에도 다양한 자연적 단서를 조합하여 항법을 수행했다",structure:"별 활용 → (삽입: 한계) → 별 관찰 불가 → 결과적으로 복합 항법 → 해빙 위 이동 → 동물 활용",key_sentence:"However, depending entirely on observing the stars would be totally impractical as the stars were frequently obscured by cloud, fog, or blowing snow.",key_sentence_reason:"삽입할 문장 자체 — However(역접)가 앞의 내용을 뒤집고 Consequently(결과)로 연결되는 논리적 위치",flow:["이누이트: 별을 항법 도구로 사용, 주기적 조정","별 계산: 별자리 위치의 철저한 지식 필요(② 앞)","(삽입 위치 ③): However — 하지만 전적 의존은 비실용적","1년 중 5개월: 극야로 별 관찰 불가(③ 앞)","Consequently: 별 + 풍향 + 눈더미 + 해류 등 복합 항법","해빙 위 이동 시 방향 수정","사냥개, 동물 행동에서도 항법 통찰"]},
+  {keywords:[{word:"However",role:"삽입 문장의 역접 신호 — 앞의 긍정적 내용을 뒤집음"},{word:"Consequently",role:"삽입 문장의 결과 → ③ 뒤에 자연스럽게 연결"},{word:"impractical",role:"별에만 의존하는 것의 한계"}],connectors:[{word:"However(삽입문)",type:"역접",effect:"별의 유용성(앞) → 한계(삽입) → 결과(Consequently) 순서 형성"},{word:"Consequently",type:"결과",effect:"삽입 문장의 '별이 가려짐'이 원인 → '복합 항법'이 결과"}],contrast:"별 관찰의 유용성 ↔ 별에 전적으로 의존하는 것의 비실용성",logic:"이누이트는 별을 주요 항법 도구로 사용했지만 기상 조건의 한계로 인해 다양한 자연적 단서를 조합한 복합 항법을 발전시켰다"},
+  {strategy:"삽입 문장의 However(역접)와 ③ 뒤의 Consequently(결과)를 연결하세요. 삽입 문장 = 원인(별이 가려짐), Consequently절 = 결과(복합 항법) → 삽입 위치 = ③",answer_reason:"② 앞: 별 계산의 장점 → However 삽입(전적 의존은 비실용적) → ③ 뒤: Consequently(결과적으로 복합 항법) → 논리 완벽 연결 → 정답 ③",traps:["① 위치 — 아직 별의 유용성 설명 중, However가 너무 일찍 등장","④⑤ 위치 — Consequently 이미 지나쳐서 Because가 없음"],tip:"문장 삽입 = '삽입 문장의 첫 단어'와 '삽입 후 다음 문장 첫 단어'의 논리 관계를 확인! However(역접) → 삽입 전 내용이 긍정적, Consequently → 삽입 문장이 원인!"}
+],
+"26007-0141": [
+  {topic:"사회적 갈등을 피하기 위한 집단 이탈은 동물적 본능에서 비롯되며 지위 상승의 효과적 수단이다",structure:"이탈 충동(동물 관점) → 동물 사례 → 인간에의 적용 → 이탈의 이점 → 설득의 효과 → 결론",key_sentence:"Leaving is an effective way to raise your status when you don't expect to win a direct conflict.",key_sentence_reason:"글의 핵심 결론 — Leaving(=quit)과 raise your status(=elevate)가 요약문 (A), (B) 정답의 직접 근거",flow:["떠나려는 충동 = 동물의 관점에서 이해 가능","포유류: 위험 시 집단(cluster), 안전 시 분산(spread out)","포식자 없는 동물만 혼자 삶(호랑이, 오랑우탄)","인간: 거리 두기로 갈등 회피","이탈 효과: 자원 접근↑ + 위계 하위 탈출","타인 설득하면 → 갑자기 우위 위치","결론: 이탈 = 지위 상승의 효과적 방법"]},
+  {keywords:[{word:"cluster vs spread out",role:"위험/안전에 따른 동물의 대비 행동"},{word:"hierarchy",role:"이탈로 탈출하는 사회적 구조"},{word:"one-up position",role:"이탈 후 획득하는 우위적 위치 — elevate의 근거"}],connectors:[{word:"Not only ~ but",type:"추가 강조",effect:"이탈의 첫 번째 이점에 두 번째 이점을 강조해서 추가"},{word:"Leaving is",type:"결론",effect:"전체 논의를 한 문장으로 압축"}],contrast:"직접 갈등(지위 상승 어려움) ↔ 이탈(효과적인 지위 상승 수단)",logic:"포유류의 분산 본능에서 비롯된 집단 이탈은 자원 접근 향상, 위계 탈출, 지위 상승을 가능하게 하는 효과적인 전략이다"},
+  {strategy:"요약문의 (A) = quit(이탈), (B) = elevate(지위 상승). 지문에서 'Leaving'과 'raise your status'를 찾으세요. 마지막 문장이 정답의 직접 근거입니다.",answer_reason:"'Leaving is an effective way to raise your status' → (A) Leaving = quit, (B) raise your status = elevate → 정답 ③ quit / elevate",traps:["① follow/stabilize — follow는 이탈과 반대, stabilize는 지위 안정화(상승 아님)","④ abandon/harm — harm은 이탈의 부정적 결과(글의 논지와 반대)"],tip:"요약문 빈칸 = 마지막 문장에 정답이 있을 가능성이 높음! 결론 문장의 핵심 동사를 동의어로 바꾼 것이 정답이에요."}
+],
+"26007-0142": [
+  {topic:"기억은 원본을 그대로 재생하는 것이 아니라 불완전하게 재구성하는 허구적 과정이다",structure:"기억의 작동 원리(뉴런 재활성화) → 저해상도 재생 → 불완전성 → 기억=허구 → ⑤ 오류 → 재작성",key_sentence:"Memory is not just a replaying, but a rewriting.",key_sentence_reason:"글의 핵심 결론 — 기억이 단순 재생이 아닌 재구성임을 압축적으로 표현",flow:["기억 = 원래 경험의 뉴런을 다시 활성화하는 과정","①same 뉴런이 재활성화(동일한 뉴런 ✅)","②저해상도 재생으로 경험됨(원본보다 희미 ✅)","기억 = 완벽 재활성화하면 생생하겠지만...","③불완전함(imperfect ✅) — 지시가 약하고 저하됨","④기억=허구(fiction ✅) — 사실처럼 보이지만","⑤왜곡에 저항적(resistant) → 취약한(susceptible)으로 수정 필요","결론: 재생이 아닌 재작성"]},
+  {keywords:[{word:"neurons",role:"기억의 생물학적 기제"},{word:"lower-resolution",role:"기억의 불완전성을 설명하는 핵심 비유"},{word:"resistant → susceptible",role:"⑤번 어휘 오류 — 왜곡에 취약해야 문맥 일치"}],connectors:[{word:"But",type:"역접",effect:"완벽 재활성화 가능성 → 실제 불완전성으로 전환"},{word:"not just A, but B",type:"대비 강조",effect:"재생(A) vs 재작성(B) — 글의 핵심 결론"}],contrast:"사실로 제시되는 기억 ↔ 실제로는 허구적/왜곡 가능한 재구성",logic:"기억은 뉴런의 재활성화로 작동하지만 원본보다 희미하고 부정확한 불완전한 재구성 과정이다"},
+  {strategy:"어휘 문제는 ⑤ resistant의 의미가 문맥에 맞는지 확인하세요. 앞에서 '희미한 복사본', '허구', '재작성' → 기억은 왜곡되기 쉬움 → resistant(저항적)가 아닌 susceptible(취약한)이어야 함",answer_reason:"기억이 '왜곡에 저항적'이면 → '허구', '부정확한 복사본', '재작성' 설명과 모순. '왜곡에 취약(susceptible)'이어야 앞뒤 일치 → 정답 ⑤",traps:["③ imperfect — '불완전한' → 앞의 weak and degraded와 일치 ✅","④ fiction — '허구' → 사실처럼 보이지만 실제론 재구성 → 일치 ✅"],tip:"어휘 문제에서 틀린 것 = 글의 전체 방향과 반대되는 단어! 이 글의 방향 = '기억은 불완전하고 왜곡 가능' → resistant(저항적)이 이 방향과 반대!"}
+],
+"26007-0143/44": [
+  {topic:"유머는 진화적 이점이 있으며 사회적 윤활유, 협력 촉진, 갈등 해소의 기능을 한다",structure:"다윈의 가설 → 잠재적 단점 but 이점이 큼 → 사회적 그루밍 대체 → 사회적 윤활유 기능 → 영장류 관찰 → 전통 사회(⑤ 오류)",key_sentence:"the fundamental evolutionary purpose of humour and laughter was to (c) facilitate cooperation between people; essentially, a laughing response signals that one is both ready and able to cooperate.",key_sentence_reason:"유머의 핵심 진화적 목적을 직접 서술 — 제목 근거이자 (c) facilitate ✅의 근거",flow:["다윈: 유머에 진화적 이점 존재","잠재적 단점(에너지, 소음) far outweighed by 이점","사회적 그루밍을 대체한 유머 → 오피오이드 방출","유머 = 사회적 윤활유, 협력 촉진(c=facilitate ✅)","영장류: 모의 공격, 갈등 해소 공간(d=resolved ✅)","전통 사회: 농담 관계, 클로닝 → e=generate(오류→relieve로 수정)"]},
+  {keywords:[{word:"evolutionary advantage",role:"글 전체의 핵심 프레임 — 제목 근거"},{word:"social lubricant",role:"유머의 초기 사회적 기능을 압축하는 비유"},{word:"generate → relieve",role:"(e) 어휘 오류 — 긴장 발생이 아닌 긴장 완화가 맞음"}],connectors:[{word:"far outweighed by",type:"비교",effect:"단점보다 이점이 훨씬 크다는 강조"},{word:"Thus",type:"결론",effect:"앞의 논거를 유머의 사회적 윤활유 기능으로 수렴"}],contrast:"유머의 잠재적 단점(에너지, 소음) ↔ 압도적으로 큰 이점(협력, 결속, 갈등 해소)",logic:"유머는 진화적으로 협력과 사회 결속을 촉진하고 갈등을 해소하는 사회적 기능을 담당한다"},
+  {strategy:"제목: 글의 프레임(evolutionary advantage, social lubricant, cooperation)이 모두 '진화적 기원과 사회적 기능'을 가리킵니다. 어휘: (e) generate = '발생시키다' → 긴장 발생은 글의 방향(갈등 해소)과 반대 → relieve로 수정",answer_reason:"제목: evolutionary advantage, facilitate cooperation, resolved conflicts → ① The Evolutionary Roots of Humour and Laughter. 어휘 (e): 앞의 'mock-aggression, safe spaces, resolved' → 긴장 완화 방향 → generate가 아닌 relieve",traps:["③ 'Psychological Benefits' — 심리적 이점보다 진화적 기원이 핵심","⑤ 'Animal Communication' — 비교가 아닌 인간 유머의 기원이 주제"],tip:"제목 추론에서 글의 첫 문장(Darwin, evolutionary advantage)과 마지막 결론(resolve tensions)이 모두 담긴 선택지를 고르세요. 진화 + 사회 기능 = ①번!"}
+]
+};
 
 function renderStepResult(el, r, stepIdx) {
   let html = '';
   if (stepIdx === 0) {
     html = `
-      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">주제</span><br><b>${r.topic||''}</b></div>
-      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">전개 방식</span><br>${r.structure||''}</div>
-      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">핵심 주제문</span><br>
-        <div style="background:#f0fdf4;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px;font-style:italic;margin:6px 0">${r.key_sentence||''}</div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">주제</span><br><b>${r.topic||''}</b></div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">전개 방식</span><br>${r.structure||''}</div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">핵심 주제문</span><br>
+        <div style="background:#f0fdf4;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px;font-style:italic;margin:6px 0;font-size:13px;line-height:2">${r.key_sentence||''}</div>
         <span style="font-size:13px;color:var(--muted)">${r.key_sentence_reason||''}</span>
       </div>
       <div><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">흐름 포인트</span><br>
-        ${(r.flow||[]).map((f,i)=>`<div style="display:flex;gap:8px;align-items:flex-start;margin:5px 0"><span style="min-width:20px;height:20px;background:var(--accent);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span><span>${f}</span></div>`).join('')}
+        ${(r.flow||[]).map((f,i)=>`<div style="display:flex;gap:8px;align-items:flex-start;margin:5px 0"><span style="min-width:20px;height:20px;background:var(--accent);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span><span style="font-size:13px;line-height:1.8">${f}</span></div>`).join('')}
       </div>`;
   } else if (stepIdx === 1) {
     html = `
       <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">반복 키워드</span><br>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${(r.keywords||[]).map(k=>`<span style="background:var(--hl-y);border-radius:6px;padding:3px 10px;font-size:13px"><b>${k.word}</b> <span style="color:var(--muted);font-size:12px">— ${k.role}</span></span>`).join('')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${(r.keywords||[]).map(k=>`<span style="background:var(--hl-y);border-radius:6px;padding:4px 10px;font-size:13px"><b>${k.word}</b> — <span style="color:var(--muted)">${k.role}</span></span>`).join('')}</div>
       </div>
       <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">연결어 분석</span><br>
-        ${(r.connectors||[]).map(c=>`<div style="margin:5px 0;display:flex;gap:8px;align-items:flex-start"><span style="background:var(--hl-b);border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;white-space:nowrap">${c.word}</span><span style="font-size:13px">${c.type} — ${c.effect}</span></div>`).join('')}
+        ${(r.connectors||[]).map(c=>`<div style="margin:5px 0;display:flex;gap:8px;align-items:flex-start"><span style="background:var(--hl-b);border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;white-space:nowrap">${c.word}</span><span style="font-size:13px;line-height:1.8">${c.type} — ${c.effect}</span></div>`).join('')}
       </div>
-      ${r.contrast ? `<div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">대조 관계</span><br><span style="font-size:13px">${r.contrast}</span></div>` : ''}
-      <div style="background:#f0fdf4;border-radius:8px;padding:10px 14px"><b>핵심 논리:</b> ${r.logic||''}</div>`;
+      ${r.contrast ? `<div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">대조 관계</span><br><span style="font-size:13px;line-height:1.8">${r.contrast}</span></div>` : ''}
+      <div style="background:#f0fdf4;border-radius:8px;padding:10px 14px"><b>핵심 논리:</b> <span style="font-size:13px">${r.logic||''}</span></div>`;
   } else {
     html = `
-      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">풀이 전략</span><br><span style="font-size:14px">${r.strategy||''}</span></div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">풀이 전략</span><br><span style="font-size:14px;line-height:2">${r.strategy||''}</span></div>
       <div style="margin-bottom:12px;background:#f0fdf4;border-left:3px solid var(--accent);padding:10px 14px;border-radius:4px">
         <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">정답 근거</span><br>
-        <span style="font-size:14px">${r.answer_reason||''}</span>
+        <span style="font-size:14px;line-height:2">${r.answer_reason||''}</span>
       </div>
       <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">함정 선지</span><br>
-        ${(r.traps||[]).map((t,i)=>`<div style="margin:5px 0;display:flex;gap:8px"><span style="background:var(--hl-p);border-radius:4px;padding:2px 7px;font-size:12px;white-space:nowrap">함정 ${i+1}</span><span style="font-size:13px">${t}</span></div>`).join('')}
+        ${(r.traps||[]).map((t,i)=>`<div style="margin:5px 0;display:flex;gap:8px"><span style="background:var(--hl-p);border-radius:4px;padding:2px 7px;font-size:12px;white-space:nowrap">함정 ${i+1}</span><span style="font-size:13px;line-height:1.8">${t}</span></div>`).join('')}
       </div>
-      <div style="background:#fef9c3;border-radius:8px;padding:10px 14px"><b>💡 핵심 팁:</b> ${r.tip||''}</div>`;
+      <div style="background:#fef9c3;border-radius:8px;padding:10px 14px"><b>💡 핵심 팁:</b> <span style="font-size:13px">${r.tip||''}</span></div>`;
   }
   el.innerHTML = html;
 }
 
+const STEPS = [
+  {num:1,title:'글의 구조 & 흐름 파악',sub:'주제문 위치 · 글의 전개 방식 · 단락 구성'},
+  {num:2,title:'핵심 표현 & 논리 연결 분석',sub:'빈출 연결어 · 대조/인과 관계 · 반복 키워드'},
+  {num:3,title:'문제 유형별 풀이 전략',sub:'유형 특성 · 함정 선지 분석 · 정답 근거'}
+];
+
+function showStep(code, stepIdx, btnEl) {
+  const data = STEP_DATA[code];
+  if (!data || !data[stepIdx]) return;
+  const resultEl = btnEl.parentElement.querySelector('.step-result');
+  btnEl.style.display = 'none';
+  renderStepResult(resultEl, data[stepIdx], stepIdx);
+}
+
 function switchTab(tabName) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tabName));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tabName));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===tabName));
 }
 
 function show(idx) {
   currentIdx = idx;
   const p = PROBLEMS[idx];
-  const sentences = splitSentences(p.passage);
+  const sents = splitSentences(p.passage);
+  const sentData = SENT_DATA[p.code] || [];
 
-  const sentCards = sentences.map((s,i)=>`
-    <div class="sent-card">
-      <div class="sent-header" onclick="toggleSent(this,${i})">
-        <span class="s-num">S${i+1}</span>
-        <span class="s-en">${s}</span>
-        <span class="s-toggle">▾</span>
-      </div>
-      <div class="sent-body">
-        <div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>클릭 시 AI 분석</span></div>
-      </div>
-    </div>`).join('');
+  const sentCards = sents.map((s,i)=>renderSentCard(s, sentData[i]||null, i)).join('');
 
-  const stepCards = STEPS.map((step, i) => `
+  const stepCards = STEPS.map((step,i)=>`
     <div class="step-card">
       <div class="step-header">
         <div class="step-num">${step.num}</div>
-        <div>
-          <div class="step-title">${step.title}</div>
-          <div class="step-sub">${step.sub}</div>
-        </div>
+        <div><div class="step-title">${step.title}</div><div class="step-sub">${step.sub}</div></div>
       </div>
       <div class="step-body">
-        <button class="step-analyze-btn" onclick="analyzeStep(${i}, this)">✨ AI 분석하기</button>
+        <button class="step-analyze-btn" onclick="showStep('${p.code}',${i},this)">📖 분석 보기</button>
         <div class="step-result"></div>
       </div>
     </div>`).join('');
@@ -518,7 +626,7 @@ function show(idx) {
       <button class="tab-btn" data-tab="step" onclick="switchTab('step')">🔍 지문 단계별 분석</button>
     </div>
     <div class="tab-panel active" data-panel="sent">
-      <div class="section-label">각 문장을 클릭하면 AI가 실시간 분석합니다</div>
+      <div class="section-label">각 문장을 클릭하면 분석이 펼쳐집니다</div>
       ${LEGEND}
       ${sentCards}
     </div>
@@ -528,17 +636,16 @@ function show(idx) {
     </div>`;
 
   document.getElementById('bar-title').textContent = `${p.code} · ${p.qtype}`;
-  document.getElementById('list-view').style.display = 'none';
-  document.getElementById('detail-view').style.display = 'block';
+  document.getElementById('list-view').style.display='none';
+  document.getElementById('detail-view').style.display='block';
   window.scrollTo(0,0);
 }
 
-function revealAnswer(btn) {
+function revealAnswer(btn){
   btn.closest('.answer-wrap').querySelector('.answer-hidden').classList.add('show');
   btn.style.display='none';
 }
-
-function goBack() {
+function goBack(){
   document.getElementById('list-view').style.display='block';
   document.getElementById('detail-view').style.display='none';
   window.scrollTo(0,0);
