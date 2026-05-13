@@ -52,7 +52,22 @@ header h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;line-
 .detail-header{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:20px;}
 .detail-meta{font-size:11px;color:var(--muted);margin-bottom:8px;font-family:'DM Mono',monospace;}
 .detail-qtype{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;}
-.detail-passage{font-size:14px;line-height:1.9;color:var(--text);border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;white-space:pre-wrap;}
+.detail-passage{font-size:14px;line-height:3.2;color:var(--text);border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;white-space:pre-wrap;}
+.tab-bar{display:flex;gap:4px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:5px;}
+.tab-btn{flex:1;padding:9px 0;font-family:'Pretendard',sans-serif;font-size:13px;font-weight:500;border:none;border-radius:8px;cursor:pointer;background:none;color:var(--muted);transition:background .15s,color .15s;}
+.tab-btn.active{background:var(--accent);color:#fff;font-weight:600;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.step-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden;}
+.step-header{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--bg);}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-title{font-size:14px;font-weight:600;color:var(--text);}
+.step-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.step-body{padding:16px 20px;border-top:1px solid var(--border);}
+.step-analyze-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:2px solid var(--accent);color:var(--accent);font-family:'Pretendard',sans-serif;font-size:13px;font-weight:600;padding:7px 18px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s;}
+.step-analyze-btn:hover{background:var(--accent);color:#fff;}
+.step-result{margin-top:14px;font-size:14px;line-height:2.2;color:var(--text);}
+.step-result b{color:var(--accent);}
 .blank-slot{display:inline-block;background:#fef9c3;color:#713f12;border:1px dashed #ca8a04;border-radius:4px;padding:0 8px;font-size:13px;font-weight:500;}
 .choices{margin-top:12px;}
 .choice{font-size:13px;color:var(--muted);padding:3px 0;}
@@ -72,7 +87,7 @@ header h1{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;line-
 .sent-header{padding:13px 18px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;transition:background .15s;}
 .sent-header:hover{background:#f9f7f4;}
 .s-num{font-family:'DM Mono',monospace;font-size:11px;color:#999;min-width:22px;padding-top:3px;}
-.s-en{font-size:14px;line-height:1.75;flex:1;}
+.s-en{font-size:14px;line-height:3.0;flex:1;}
 .s-toggle{color:#bbb;font-size:14px;padding-top:3px;transition:transform .25s;}
 .s-toggle.open{transform:rotate(180deg);}
 .sent-body{display:none;padding:14px 18px 16px 52px;border-top:1px solid var(--border);}
@@ -208,9 +223,9 @@ choices:['제목 ① The Evolutionary Roots of Humour and Laughter ← 정답','
 passage:`Darwin said that there must be some sort of evolutionary advantage associated with humour, and it does indeed appear that humans developed it directly because it has numerous positive properties, and very few negative ones. Laughing uses up energy, perhaps, and the noise created by laughter might have made our early ancestors vulnerable to predators, but these potential problems are far (a) outweighed by the benefits. Some argue that the pleasure associated with humorous exchange replaced the pleasure derived from social grooming at some stage in our development: both laughter and social grooming release endogenous opiates and so the feelings of gratification (b) positively reinforce both types of behaviour. Thus, it seems that one early function of humour was as a social lubricant, and the fundamental evolutionary purpose of humour and laughter was to (c) facilitate cooperation between people; essentially, a laughing response signals that one is both ready and able to cooperate. Observations of primates suggest that humour might be linked to our need to partake in mock-aggression and create safe spaces where social conflicts can be (d) resolved. Similarly, anthropologists note that humour in traditional societies often takes the form of joking relationships between people, or individual clowning, whose purpose is to (e) generate tensions.`}
 ];
 
-// AIzaSyDgoruhxiVKHQsy6fOGrNkubU-X2dgojsQ
+// ★ 여기에 Gemini API 키를 입력하세요
 // 발급: https://aistudio.google.com/app/apikey (무료)
-const GEMINI_API_KEY = 'YOUR_API_KEY_HERE';
+const GEMINI_API_KEY = 'AIzaSyDgoruhxiVKHQsy6fOGrNkubU-X2dgojsQ';
 
 const cache = {};
 let currentIdx = 0;
@@ -324,6 +339,134 @@ async function toggleSent(header, idx) {
   }
 }
 
+const STEPS = [
+  {
+    num:1, title:'글의 구조 & 흐름 파악',
+    sub:'주제문 위치 · 글의 전개 방식 · 단락 구성',
+    prompt:(p)=>`You are a Korean CSAT English expert. Analyze this passage structure for Korean students.
+Problem type: ${p.qtype}
+Passage: "${p.passage}"
+
+Reply in Korean with this JSON (no markdown):
+{
+  "topic": "한 줄 주제 요약",
+  "structure": "글의 전개 방식 (예: 두berlins 제시→예시→결론)",
+  "key_sentence": "핵심 주제문 (영어 그대로)",
+  "key_sentence_reason": "이 문장이 핵심인 이유",
+  "flow": ["문장 흐름 포인트1", "포인트2", "포인트3"]
+}`
+  },
+  {
+    num:2, title:'핵심 표현 & 논리 연결 분석',
+    sub:'빈출 연결어 · 대조/인과 관계 · 반복 키워드',
+    prompt:(p)=>`You are a Korean CSAT English expert. Analyze key expressions and logical connections.
+Problem type: ${p.qtype}
+Passage: "${p.passage}"
+
+Reply in Korean with this JSON (no markdown):
+{
+  "keywords": [{"word":"반복 키워드","role":"역할 설명"}],
+  "connectors": [{"word":"연결어","type":"대조/인과/예시/결론 등","effect":"흐름에서의 역할"}],
+  "contrast": "대조 관계가 있다면 설명 (없으면 null)",
+  "logic": "핵심 논리 구조 한 줄 요약"
+}`
+  },
+  {
+    num:3, title:'문제 유형별 풀이 전략',
+    sub:'유형 특성 · 함정 선지 분석 · 정답 근거',
+    prompt:(p)=>`You are a Korean CSAT English expert. Give solving strategy for this specific problem type.
+Problem type: ${p.qtype}
+Passage: "${p.passage}"
+Choices: ${p.choices.join(' / ')}
+Answer: ${p.answer}번 (${p.choices[p.answer-1]})
+
+Reply in Korean with this JSON (no markdown):
+{
+  "strategy": "이 유형의 핵심 풀이 전략 (2-3문장)",
+  "answer_reason": "정답이 정답인 이유 (지문 근거 포함)",
+  "traps": ["함정 선지 설명1", "함정 선지 설명2"],
+  "tip": "이 문제에서 배울 수 있는 핵심 팁"
+}`
+  }
+];
+
+async function analyzeStep(stepIdx, btnEl) {
+  const p = PROBLEMS[currentIdx];
+  const step = STEPS[stepIdx];
+  const cacheKey = `step_${currentIdx}_${stepIdx}`;
+
+  const resultEl = btnEl.parentElement.querySelector('.step-result');
+  if (cache[cacheKey]) { renderStepResult(resultEl, cache[cacheKey], stepIdx); return; }
+
+  btnEl.style.display = 'none';
+  resultEl.innerHTML = `<div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span>AI 분석 중...</span></div>`;
+
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+    resultEl.innerHTML = `<div class="ai-error">⚠️ API 키를 입력해주세요.</div>`;
+    btnEl.style.display = '';
+    return;
+  }
+
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const res = await fetch(url, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text: step.prompt(p)}]}], generationConfig:{temperature:0.3, maxOutputTokens:1000}})
+    });
+    const data = await res.json();
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    cache[cacheKey] = result;
+    renderStepResult(resultEl, result, stepIdx);
+  } catch(e) {
+    resultEl.innerHTML = `<div class="ai-error">⚠️ 오류: ${e.message}</div>`;
+    btnEl.style.display = '';
+  }
+}
+
+function renderStepResult(el, r, stepIdx) {
+  let html = '';
+  if (stepIdx === 0) {
+    html = `
+      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">주제</span><br><b>${r.topic||''}</b></div>
+      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">전개 방식</span><br>${r.structure||''}</div>
+      <div style="margin-bottom:10px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">핵심 주제문</span><br>
+        <div style="background:#f0fdf4;border-left:3px solid var(--accent);padding:8px 12px;border-radius:4px;font-style:italic;margin:6px 0">${r.key_sentence||''}</div>
+        <span style="font-size:13px;color:var(--muted)">${r.key_sentence_reason||''}</span>
+      </div>
+      <div><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">흐름 포인트</span><br>
+        ${(r.flow||[]).map((f,i)=>`<div style="display:flex;gap:8px;align-items:flex-start;margin:5px 0"><span style="min-width:20px;height:20px;background:var(--accent);color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">${i+1}</span><span>${f}</span></div>`).join('')}
+      </div>`;
+  } else if (stepIdx === 1) {
+    html = `
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">반복 키워드</span><br>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${(r.keywords||[]).map(k=>`<span style="background:var(--hl-y);border-radius:6px;padding:3px 10px;font-size:13px"><b>${k.word}</b> <span style="color:var(--muted);font-size:12px">— ${k.role}</span></span>`).join('')}</div>
+      </div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">연결어 분석</span><br>
+        ${(r.connectors||[]).map(c=>`<div style="margin:5px 0;display:flex;gap:8px;align-items:flex-start"><span style="background:var(--hl-b);border-radius:4px;padding:2px 8px;font-size:12px;font-weight:600;white-space:nowrap">${c.word}</span><span style="font-size:13px">${c.type} — ${c.effect}</span></div>`).join('')}
+      </div>
+      ${r.contrast ? `<div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">대조 관계</span><br><span style="font-size:13px">${r.contrast}</span></div>` : ''}
+      <div style="background:#f0fdf4;border-radius:8px;padding:10px 14px"><b>핵심 논리:</b> ${r.logic||''}</div>`;
+  } else {
+    html = `
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">풀이 전략</span><br><span style="font-size:14px">${r.strategy||''}</span></div>
+      <div style="margin-bottom:12px;background:#f0fdf4;border-left:3px solid var(--accent);padding:10px 14px;border-radius:4px">
+        <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">정답 근거</span><br>
+        <span style="font-size:14px">${r.answer_reason||''}</span>
+      </div>
+      <div style="margin-bottom:12px"><span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">함정 선지</span><br>
+        ${(r.traps||[]).map((t,i)=>`<div style="margin:5px 0;display:flex;gap:8px"><span style="background:var(--hl-p);border-radius:4px;padding:2px 7px;font-size:12px;white-space:nowrap">함정 ${i+1}</span><span style="font-size:13px">${t}</span></div>`).join('')}
+      </div>
+      <div style="background:#fef9c3;border-radius:8px;padding:10px 14px"><b>💡 핵심 팁:</b> ${r.tip||''}</div>`;
+  }
+  el.innerHTML = html;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tabName));
+}
+
 function show(idx) {
   currentIdx = idx;
   const p = PROBLEMS[idx];
@@ -341,6 +484,21 @@ function show(idx) {
       </div>
     </div>`).join('');
 
+  const stepCards = STEPS.map((step, i) => `
+    <div class="step-card">
+      <div class="step-header">
+        <div class="step-num">${step.num}</div>
+        <div>
+          <div class="step-title">${step.title}</div>
+          <div class="step-sub">${step.sub}</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <button class="step-analyze-btn" onclick="analyzeStep(${i}, this)">✨ AI 분석하기</button>
+        <div class="step-result"></div>
+      </div>
+    </div>`).join('');
+
   document.getElementById('detail-content').innerHTML = `
     <div class="detail-header">
       <div class="detail-meta">${p.강} · p.${p.쪽} · 문항코드 ${p.code}</div>
@@ -355,9 +513,19 @@ function show(idx) {
         </div>
       </div>
     </div>
-    <div class="section-label">문장별 분석 — 각 문장을 클릭하면 AI가 실시간 분석합니다</div>
-    ${LEGEND}
-    ${sentCards}`;
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="sent" onclick="switchTab('sent')">📝 문장별 분석</button>
+      <button class="tab-btn" data-tab="step" onclick="switchTab('step')">🔍 지문 단계별 분석</button>
+    </div>
+    <div class="tab-panel active" data-panel="sent">
+      <div class="section-label">각 문장을 클릭하면 AI가 실시간 분석합니다</div>
+      ${LEGEND}
+      ${sentCards}
+    </div>
+    <div class="tab-panel" data-panel="step">
+      <div class="section-label">3단계로 지문을 깊이 분석합니다 — 각 단계 버튼을 클릭하세요</div>
+      ${stepCards}
+    </div>`;
 
   document.getElementById('bar-title').textContent = `${p.code} · ${p.qtype}`;
   document.getElementById('list-view').style.display = 'none';
